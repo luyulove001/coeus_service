@@ -79,9 +79,5 @@ android {
 dependencies {
     compile files('libs/Msc-1.3.jar')
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.umeng.analytics:analytics:latest.integration'
-    compile 'net.tatans.coeus:coeus-network:5.0.0-release'
-    compile 'net.tatans.coeus:coeus-sound:1.0.0-release'
     compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.belerweb:pinyin4j:2.5.0'
 }
