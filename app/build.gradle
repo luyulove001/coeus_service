@@ -3,7 +3,7 @@ import java.text.SimpleDateFormat
 apply plugin: 'com.android.application'
 
 android {
-    def AppName = "ͨѶ¼"
+    def AppName = "天坦服务"
     compileSdkVersion 22
     buildToolsVersion '22.0.1'
     SimpleDateFormat df = new SimpleDateFormat("yyMMddHHmm")
@@ -45,7 +45,7 @@ android {
                 def file = variant.outputs[0].outputFile
                 def f_parent = file.parent
                 def f_name = file.name
-                def app_release = "Rhea-launcher-release"
+                def app_release = "app-release"
                 def app_debug = "Rhea-launcher-debug"
                 if ((file.name).startsWith(app_release)) {
                     variant.outputs[0].outputFile = new File(f_parent, f_name.replace(app_release, AppName + "-" + version_code))
