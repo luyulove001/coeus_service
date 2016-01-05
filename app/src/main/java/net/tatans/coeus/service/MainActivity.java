@@ -1,4 +1,4 @@
-package net.tatans.coues.service;
+package net.tatans.coeus.service;
 
 import android.app.Activity;
 import android.os.Bundle;
