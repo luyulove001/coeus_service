@@ -1,4 +1,5 @@
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+                       android:description="@string/description"
                        android:canRequestEnhancedWebAccessibility="true"
                        android:canRequestFilterKeyEvents="true"
                        android:accessibilityEventTypes="typeAllMask"
