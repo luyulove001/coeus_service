@@ -55,7 +55,7 @@ android {
                 }
             }
         }
-    /*    debug {
+        debug {
 
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -64,8 +64,8 @@ android {
                 def file = variant.outputs[0].outputFile
                 def f_parent = file.parent
                 def f_name = file.name
-                def app_release = "Rhea-contats-release"
-                def app_debug = "Rhea-contats-debug"
+                def app_release = "Rhea-tatans-service-release"
+                def app_debug = "Rhea-tatans-service-debug"
                 if ((file.name).startsWith(app_release)) {
                     variant.outputs[0].outputFile = new File(f_parent, f_name.replace(app_release, AppName + "-" + version_code))
                 }
@@ -73,7 +73,7 @@ android {
                     variant.outputs[0].outputFile = new File(f_parent, f_name.replace(app_debug, AppName + "-debug"))
                 }
             }
-        }*/
+        }
     }
 }
 
