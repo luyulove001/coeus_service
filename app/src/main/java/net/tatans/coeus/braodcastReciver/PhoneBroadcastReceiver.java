@@ -35,6 +35,7 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver implements
                                         // 如果是来电
                                         switch (tManager.getCallState()) {
                                                             case TelephonyManager.CALL_STATE_RINGING:
+                                                                                Log.d("myTag", "comming");
                                                                                 InCallAccessibilityService.flag=false;
                                                                                 break;
 
@@ -45,13 +46,14 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver implements
                                                                                           sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY),
                                                                                           SensorManager.SENSOR_DELAY_NORMAL);
                                                                                 firstSensor = 0;
-                                                                                Log.d("myTag", "-----");
+                                                                                Log.d("myTag", "online");
                                                                                 break;
 
                                                             // 挂断
                                                             case TelephonyManager.CALL_STATE_IDLE:
+                                                                                InCallAccessibilityService.flag=true;
                                                                                 sensorManager.unregisterListener(this);
-                                                                                Log.d("myTag", "|||||");
+                                                                                Log.d("myTag", "hangup");
                                                                                 break;
                                         }
                     }

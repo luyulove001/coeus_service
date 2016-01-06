@@ -5,12 +5,11 @@ import android.annotation.SuppressLint;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+
 /**
  * Created by John on 2016/1/5.
  */
 public class InCallAccessibilityService extends AccessibilityService {
-
-
                     public static Boolean flag = false;
 
                     @Override
@@ -39,8 +38,10 @@ public class InCallAccessibilityService extends AccessibilityService {
                     public void recycle(AccessibilityNodeInfo info) {
                                         //通话界面第一次进来，作点击事件，打开拨号键盘
                                         CharSequence ContentDescription = info.getContentDescription();
+//                                        Log.d("myTag", "flag:" + flag+"closed:"+closed);
                                         if (ContentDescription != null && ContentDescription.equals("拨号键盘")) {
-                                                            if (info.isClickable() && flag) {
+                                                            if (info.isClickable() && flag ) {
+
                                                                                 info.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                                                                                 flag = false;
                                                                                 return;
@@ -50,13 +51,15 @@ public class InCallAccessibilityService extends AccessibilityService {
                                         if (info.getChildCount() == 0) {
 
                                         } else {
-                                                            for (int i = 0; i < info.getChildCount(); i++) {
+                                                            for (int i = info.getChildCount() - 1; i >= 0; i--) {
                                                                                 if (info.getChild(i) != null) {
                                                                                                     recycle(info.getChild(i));
                                                                                 }
                                                             }
                                         }
                     }
+
+
 
 
 }
