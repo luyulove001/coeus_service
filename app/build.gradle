@@ -55,7 +55,7 @@ android {
                 }
             }
         }
-        debug {
+    /*    debug {
 
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -73,7 +73,7 @@ android {
                     variant.outputs[0].outputFile = new File(f_parent, f_name.replace(app_debug, AppName + "-debug"))
                 }
             }
-        }
+        }*/
     }
 }
 
