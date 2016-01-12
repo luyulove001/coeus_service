@@ -36,12 +36,13 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver implements
                                         switch (tManager.getCallState()) {
                                                             case TelephonyManager.CALL_STATE_RINGING:
                                                                                 Log.d("myTag", "comming");
-                                                                                InCallAccessibilityService.flag=false;
+                                                                                InCallAccessibilityService.flag = false;
                                                                                 break;
 
                                                             // 通话过程
                                                             case TelephonyManager.CALL_STATE_OFFHOOK:
-                                                                                InCallAccessibilityService.flag=true;
+                                                                                InCallAccessibilityService.flag = true;
+                                                                                InCallAccessibilityService.closed = true;
                                                                                 sensorManager.registerListener(this,
                                                                                           sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY),
                                                                                           SensorManager.SENSOR_DELAY_NORMAL);
@@ -51,7 +52,8 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver implements
 
                                                             // 挂断
                                                             case TelephonyManager.CALL_STATE_IDLE:
-                                                                                InCallAccessibilityService.flag=true;
+                                                                                InCallAccessibilityService.flag = true;
+                                                                                InCallAccessibilityService.closed = true;
                                                                                 sensorManager.unregisterListener(this);
                                                                                 Log.d("myTag", "hangup");
                                                                                 break;
@@ -64,7 +66,11 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver implements
                     public void onSensorChanged(SensorEvent event) {
                                         float[] its = event.values;
                                         if (its != null && event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
-                                                            if (its[0] == 0.0) {
+                                                            if (audioManager.isWiredHeadsetOn()) {
+                                                                                audioManager.setSpeakerphoneOn(false);
+                                                                                firstSensor = 1;
+                                                                                Log.d("myTag", "222222");
+                                                            } else if (its[0] == 0.0) {
                                                                                 audioManager.setSpeakerphoneOn(false);
                                                                                 firstSensor = 1;
                                                                                 Log.d("myTag", "0000");

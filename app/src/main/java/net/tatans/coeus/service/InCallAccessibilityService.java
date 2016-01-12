@@ -2,6 +2,7 @@ package net.tatans.coeus.service;
 
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
+import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -11,10 +12,12 @@ import android.view.accessibility.AccessibilityNodeInfo;
  */
 public class InCallAccessibilityService extends AccessibilityService {
                     public static Boolean flag = false;
+                    public static Boolean closed = true;
 
                     @Override
                     protected void onServiceConnected() {
                                         super.onServiceConnected();
+                                        Log.d("myTag", "connected");
                     }
 
                     @SuppressLint("NewApi")
@@ -38,9 +41,11 @@ public class InCallAccessibilityService extends AccessibilityService {
                     public void recycle(AccessibilityNodeInfo info) {
                                         //通话界面第一次进来，作点击事件，打开拨号键盘
                                         CharSequence ContentDescription = info.getContentDescription();
-//                                        Log.d("myTag", "flag:" + flag+"closed:"+closed);
+                                        if(ContentDescription != null &&ContentDescription.equals("*")){
+                                                            closed=false;
+                                        }
                                         if (ContentDescription != null && ContentDescription.equals("拨号键盘")) {
-                                                            if (info.isClickable() && flag ) {
+                                                            if (info.isClickable() && flag &&closed) {
 
                                                                                 info.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                                                                                 flag = false;
