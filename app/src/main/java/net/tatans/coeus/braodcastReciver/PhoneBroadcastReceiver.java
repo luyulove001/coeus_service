@@ -66,18 +66,20 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver implements
                     public void onSensorChanged(SensorEvent event) {
                                         float[] its = event.values;
                                         if (its != null && event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
-                                                            if (audioManager.isWiredHeadsetOn()) {
+                                                            if (audioManager.isWiredHeadsetOn()||audioManager.isBluetoothScoOn()||its[0] == 0.0) {
                                                                                 audioManager.setSpeakerphoneOn(false);
                                                                                 firstSensor = 1;
                                                                                 Log.d("myTag", "222222");
-                                                            } else if (its[0] == 0.0) {
-                                                                                audioManager.setSpeakerphoneOn(false);
-                                                                                firstSensor = 1;
-                                                                                Log.d("myTag", "0000");
                                                             } else if (firstSensor == 1) {
                                                                                 audioManager.setSpeakerphoneOn(true);
                                                                                 Log.d("myTag", "1111");
                                                             }
+                                                            /*if(firstSensor==1){
+                                                                                audioManager.setSpeakerphoneOn(true);
+                                                            }else{
+                                                                                audioManager.setSpeakerphoneOn(false);
+                                                                                firstSensor = 1;
+                                                            }*/
                                         }
 
                     }
