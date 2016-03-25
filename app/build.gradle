@@ -17,7 +17,7 @@ android {
     defaultConfig {
         manifestPlaceholders = [APP_NAME: AppName]
         applicationId "net.tatans.coeus.service"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 22
         versionCode version_code.toInteger()
         versionName "1.1." + version_code

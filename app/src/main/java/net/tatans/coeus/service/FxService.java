@@ -16,10 +16,14 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import net.tatans.coeus.network.tools.TatansApplication;
+import net.tatans.coeus.network.tools.TatansToast;
 import net.tatans.coeus.util.PhoneUtil;
 
 import java.util.List;
@@ -31,11 +35,12 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     LayoutParams wmParams;
     //创建浮动窗口设置布局参数的对象
     WindowManager mWindowManager;
-    Button btn_1, btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9, btn_0, btn_star, btn_pound, btn_endCall, btn_answer;
+    Button btn_endCall, btn_answer;
     private static final String TAG = "FxService";
     private static String PHONE_STATE = "IDLE";
     private PhoneStateListener phoneStateListener;
     private boolean isAnswer = false;
+    private String name, callCardTelocation, phoneNumber;
 
     @Override
     public void onCreate() {
@@ -61,15 +66,9 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         //设置图片格式，效果为背景透明
         wmParams.format = PixelFormat.RGBA_8888;
         //设置浮动窗口不可聚焦（实现操作除浮动窗口外的其他可见窗口的操作）
-        if (id == R.layout.float_layout)
-            wmParams.flags = LayoutParams.FLAG_NOT_FOCUSABLE;
-        else if (id == R.layout.kb_answer)
-            wmParams.flags = LayoutParams.FLAG_LOCAL_FOCUS_MODE;
+        wmParams.flags = LayoutParams.FLAG_NOT_FOCUSABLE;
         //调整悬浮窗显示的停靠位置为左侧置顶
-        wmParams.gravity = Gravity.LEFT | Gravity.TOP;
-        // 以屏幕左上角为原点，设置x、y初始值，相对于gravity
-        wmParams.x = 0;
-        wmParams.y = 0;
+        wmParams.gravity = Gravity.LEFT | Gravity.BOTTOM;
         //设置悬浮窗口长宽数据
         wmParams.width = LayoutParams.MATCH_PARENT;
         wmParams.height = LayoutParams.MATCH_PARENT;
@@ -78,8 +77,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         mFloatLayout = (LinearLayout) inflater.inflate(id, null);
         //添加mFloatLayout
         mWindowManager.addView(mFloatLayout, wmParams);
-        if (id == R.layout.float_layout) initFloatView();
-        else if (id == R.layout.kb_answer) initKbView();
+        initKbView();
         mFloatLayout.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
     }
@@ -89,36 +87,6 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         btn_answer = (Button) mFloatLayout.findViewById(R.id.btn_answer);
         btn_endCall.setOnClickListener(this);
         btn_answer.setOnClickListener(this);
-    }
-
-    private void initFloatView() {
-        //浮动窗口按钮
-        btn_1 = (Button) mFloatLayout.findViewById(R.id.btn_1);
-        btn_2 = (Button) mFloatLayout.findViewById(R.id.btn_2);
-        btn_3 = (Button) mFloatLayout.findViewById(R.id.btn_3);
-        btn_4 = (Button) mFloatLayout.findViewById(R.id.btn_4);
-        btn_5 = (Button) mFloatLayout.findViewById(R.id.btn_5);
-        btn_6 = (Button) mFloatLayout.findViewById(R.id.btn_6);
-        btn_7 = (Button) mFloatLayout.findViewById(R.id.btn_7);
-        btn_8 = (Button) mFloatLayout.findViewById(R.id.btn_8);
-        btn_9 = (Button) mFloatLayout.findViewById(R.id.btn_9);
-        btn_0 = (Button) mFloatLayout.findViewById(R.id.btn_0);
-        btn_star = (Button) mFloatLayout.findViewById(R.id.btn_star);
-        btn_pound = (Button) mFloatLayout.findViewById(R.id.btn_pound);
-        btn_endCall = (Button) mFloatLayout.findViewById(R.id.btn_endCall);
-        btn_1.setOnClickListener(this);
-        btn_2.setOnClickListener(this);
-        btn_3.setOnClickListener(this);
-        btn_4.setOnClickListener(this);
-        btn_5.setOnClickListener(this);
-        btn_6.setOnClickListener(this);
-        btn_7.setOnClickListener(this);
-        btn_8.setOnClickListener(this);
-        btn_9.setOnClickListener(this);
-        btn_0.setOnClickListener(this);
-        btn_star.setOnClickListener(this);
-        btn_pound.setOnClickListener(this);
-        btn_endCall.setOnClickListener(this);
     }
 
     @Override
@@ -132,10 +100,52 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                 if ("OFFHOOK".equals(PHONE_STATE) && mFloatLayout == null) {
 //                    createFloatView(R.layout.float_layout);
                 } else if ("RINGING".equals(PHONE_STATE) && mFloatLayout == null && !isAnswer) {
-                    createFloatView(R.layout.kb_answer);
+//                    createFloatView(R.layout.kb_answer);
                 } else if ("IDLE".equals(PHONE_STATE)) {
                     removeFxView();
                 }
+                break;
+            case AccessibilityEvent.TYPE_VIEW_CLICKED:
+                eventText = "TYPE_VIEW_CLICKED";
+                break;
+            case AccessibilityEvent.TYPE_VIEW_FOCUSED:
+                eventText = "TYPE_VIEW_FOCUSED";
+                break;
+            case AccessibilityEvent.TYPE_VIEW_LONG_CLICKED:
+                eventText = "TYPE_VIEW_LONG_CLICKED";
+                break;
+            case AccessibilityEvent.TYPE_VIEW_SELECTED:
+                eventText = "TYPE_VIEW_SELECTED";
+                break;
+            case AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED:
+                eventText = "TYPE_VIEW_TEXT_CHANGED";
+                break;
+            case AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED:
+                eventText = "TYPE_NOTIFICATION_STATE_CHANGED";
+                break;
+            case AccessibilityEvent.TYPE_TOUCH_EXPLORATION_GESTURE_END:
+                eventText = "TYPE_TOUCH_EXPLORATION_GESTURE_END";
+                break;
+            case AccessibilityEvent.TYPE_ANNOUNCEMENT:
+                eventText = "TYPE_ANNOUNCEMENT";
+                break;
+            case AccessibilityEvent.TYPE_TOUCH_EXPLORATION_GESTURE_START:
+                eventText = "TYPE_TOUCH_EXPLORATION_GESTURE_START";
+                break;
+            case AccessibilityEvent.TYPE_VIEW_HOVER_ENTER:
+                eventText = "TYPE_VIEW_HOVER_ENTER";
+                break;
+            case AccessibilityEvent.TYPE_VIEW_HOVER_EXIT:
+                eventText = "TYPE_VIEW_HOVER_EXIT";
+                break;
+            case AccessibilityEvent.TYPE_VIEW_SCROLLED:
+                eventText = "TYPE_VIEW_SCROLLED";
+                break;
+            case AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED:
+                eventText = "TYPE_VIEW_TEXT_SELECTION_CHANGED";
+                break;
+            case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
+                eventText = "TYPE_WINDOW_CONTENT_CHANGED";
                 break;
         }
         System.out.println(eventText);
@@ -148,42 +158,6 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_1:
-                clickByID("com.android.incallui:id/one");
-                break;
-            case R.id.btn_2:
-                clickByID("com.android.incallui:id/two");
-                break;
-            case R.id.btn_3:
-                clickByID("com.android.incallui:id/three");
-                break;
-            case R.id.btn_4:
-                clickByID("com.android.incallui:id/four");
-                break;
-            case R.id.btn_5:
-                clickByID("com.android.incallui:id/five");
-                break;
-            case R.id.btn_6:
-                clickByID("com.android.incallui:id/six");
-                break;
-            case R.id.btn_7:
-                clickByID("com.android.incallui:id/seven");
-                break;
-            case R.id.btn_8:
-                clickByID("com.android.incallui:id/eight");
-                break;
-            case R.id.btn_9:
-                clickByID("com.android.incallui:id/nine");
-                break;
-            case R.id.btn_0:
-                clickByID("com.android.incallui:id/zero");
-                break;
-            case R.id.btn_star:
-                clickByID("com.android.incallui:id/star");
-                break;
-            case R.id.btn_pound:
-                clickByID("com.android.incallui:id/pound");
-                break;
             case R.id.btn_endCall:
                 removeFxView();
                 PhoneUtil.endCall(FxService.this);
@@ -191,7 +165,6 @@ public class FxService extends AccessibilityService implements View.OnClickListe
             case R.id.btn_answer:
                 answerCall();
                 removeFxView();
-//                createFloatView(R.layout.float_layout);
                 break;
         }
     }
@@ -211,19 +184,39 @@ public class FxService extends AccessibilityService implements View.OnClickListe
             sendOrderedBroadcast(mediaButtonIntent, null);
         }
         isAnswer = true;
+        try {
+            AccessibilityManager accessibilityManager = (AccessibilityManager) TatansApplication.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+            accessibilityManager.interrupt();
+            TatansToast.cancel();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private void clickByID(String btn_id) {
+    private void clickByID() {
         AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
         if (nodeInfo == null) {
             System.out.println("rootWindow为空");
             return;
         }
-        List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByViewId(btn_id);
-        if (list.size() == 0) System.out.println("ID没找到");
+        List<AccessibilityNodeInfo> nodeInfoList = nodeInfo.findAccessibilityNodeInfosByViewId("com.android.incallui:id/name");
+        name = getNodeInfoText(nodeInfoList);
+        nodeInfoList = nodeInfo.findAccessibilityNodeInfosByViewId("com.android.incallui:id/phoneNumber");
+        phoneNumber = getNodeInfoText(nodeInfoList);
+        nodeInfoList = nodeInfo.findAccessibilityNodeInfosByViewId("com.android.incallui:id/callCardTelocation");
+        callCardTelocation = getNodeInfoText(nodeInfoList);
+        Log.e(TAG, name + " -- " + phoneNumber + " -- " + callCardTelocation);
+    }
+
+    private String getNodeInfoText(List<AccessibilityNodeInfo> list) {
+        String name = "";
+        if (list.size() == 0) System.out.print("ID找不到");
         for (AccessibilityNodeInfo n : list) {
-            n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+//            n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+            name = n.getText().toString();
+            Log.e(TAG, name);
         }
+        return name;
     }
 
     @Override
@@ -262,10 +255,12 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                     case TelephonyManager.CALL_STATE_RINGING:
                         Log.e("hg", "电话状态……RINGING");
                         PHONE_STATE = "RINGING";
+                        createFloatView(R.layout.kb_answer);
                         break;
                     case TelephonyManager.CALL_STATE_OFFHOOK:
                         Log.e("hg", "电话状态……OFFHOOK");
                         PHONE_STATE = "OFFHOOK";
+                        removeFxView();
                         break;
                     case TelephonyManager.CALL_STATE_IDLE:
                         Log.e("hg", "电话状态……IDLE");
