@@ -20,7 +20,6 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import net.tatans.coeus.network.tools.TatansApplication;
 import net.tatans.coeus.network.tools.TatansToast;
@@ -71,7 +70,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         wmParams.gravity = Gravity.LEFT | Gravity.BOTTOM;
         //设置悬浮窗口长宽数据
         wmParams.width = LayoutParams.MATCH_PARENT;
-        wmParams.height = LayoutParams.MATCH_PARENT;
+        wmParams.height = LayoutParams.WRAP_CONTENT;
         LayoutInflater inflater = LayoutInflater.from(getApplication());
         //获取浮动窗口视图所在布局
         mFloatLayout = (LinearLayout) inflater.inflate(id, null);
@@ -87,6 +86,8 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         btn_answer = (Button) mFloatLayout.findViewById(R.id.btn_answer);
         btn_endCall.setOnClickListener(this);
         btn_answer.setOnClickListener(this);
+        btn_answer.setContentDescription("双击接听");
+        btn_endCall.setContentDescription("双击挂断");
     }
 
     @Override
@@ -171,13 +172,11 @@ public class FxService extends AccessibilityService implements View.OnClickListe
 
     private void answerCall() {
         try {
-            Log.e("Sandy", "for version 4.1 or larger");
             Intent intent = new Intent("android.intent.action.MEDIA_BUTTON");
             KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_HEADSETHOOK);
             intent.putExtra("android.intent.extra.KEY_EVENT", keyEvent);
             sendOrderedBroadcast(intent, "android.permission.CALL_PRIVILEGED");
         } catch (Exception e2) {
-            Log.d("Sandy", "", e2);
             Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
             KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_HEADSETHOOK);
             mediaButtonIntent.putExtra(Intent.EXTRA_KEY_EVENT, keyEvent);
@@ -227,6 +226,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     @Override
     public void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(phoneStateListener);
     }
 
     /**
