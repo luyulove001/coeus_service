@@ -2,6 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <net.tatans.coeus.views.PullDoorView
+        android:id="@+id/myImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
     <TextView
         android:id="@+id/tv_number"
         android:layout_width="match_parent"
@@ -53,4 +59,5 @@
         android:text="双指上滑解锁"
         android:textColor="@color/white"
         android:textSize="25sp" />
+    </net.tatans.coeus.views.PullDoorView>
 </LinearLayout>

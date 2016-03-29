@@ -26,6 +26,7 @@ import android.widget.TextView;
 import net.tatans.coeus.network.tools.TatansApplication;
 import net.tatans.coeus.network.tools.TatansToast;
 import net.tatans.coeus.util.PhoneUtil;
+import net.tatans.coeus.views.PullDoorView;
 
 import java.util.List;
 
@@ -52,6 +53,9 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                 .getSystemService(Context.TELEPHONY_SERVICE);
         telephonyManager.listen(new MyPhoneLinstener(),
                 PhoneStateListener.LISTEN_CALL_STATE);
+        PullDoorView pullDoorView = new PullDoorView(this);
+        createFloatView(R.layout.kb_answer);
+        System.out.println("onCreate");
     }
 
     /**
@@ -174,7 +178,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         }
     }
 
-    private void answerCall() {
+    public void answerCall() {
         try {
             Intent intent = new Intent("android.intent.action.MEDIA_BUTTON");
             KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_HEADSETHOOK);
@@ -229,14 +233,14 @@ public class FxService extends AccessibilityService implements View.OnClickListe
 
     @Override
     public void onDestroy() {
-        telephonyManager.listen(null,PhoneStateListener.LISTEN_CALL_STATE);
+        telephonyManager.listen(null, PhoneStateListener.LISTEN_CALL_STATE);
         super.onDestroy();
     }
 
     /**
      * 移除悬浮窗口
      */
-    private void removeFxView() {
+    public void removeFxView() {
         if (mFloatLayout != null) {
             //移除悬浮窗口
             mWindowManager.removeView(mFloatLayout);
