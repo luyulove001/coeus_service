@@ -1,12 +1,13 @@
 package net.tatans.coeus.service;
 
 import android.accessibilityservice.AccessibilityService;
-import android.app.Service;
-import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.database.Cursor;
 import android.graphics.PixelFormat;
+import android.net.Uri;
+import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
@@ -20,6 +21,7 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import net.tatans.coeus.network.tools.TatansApplication;
 import net.tatans.coeus.network.tools.TatansToast;
@@ -37,19 +39,19 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     Button btn_endCall, btn_answer, btn_slide;
     private static final String TAG = "FxService";
     private static String PHONE_STATE = "IDLE";
-    private PhoneStateListener phoneStateListener;
     private boolean isAnswer = false;
     private String name, callCardTelocation, phoneNumber;
+    private TelephonyManager telephonyManager;
+    private TextView tv_number;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        System.out.println("onCreate");
-        phoneStateListener = new PhoneStateListener();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("android.intent.action.PHONE_STATE");
-        filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
-        registerReceiver(phoneStateListener, filter);
+        // 获取到系统提供的 电话的服务
+        telephonyManager = (TelephonyManager) getApplicationContext()
+                .getSystemService(Context.TELEPHONY_SERVICE);
+        telephonyManager.listen(new MyPhoneLinstener(),
+                PhoneStateListener.LISTEN_CALL_STATE);
     }
 
     /**
@@ -67,7 +69,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         //设置浮动窗口不可聚焦（实现操作除浮动窗口外的其他可见窗口的操作）
         wmParams.flags = LayoutParams.FLAG_NOT_FOCUSABLE;
         //调整悬浮窗显示的停靠位置为左侧置顶
-        wmParams.gravity = Gravity.LEFT | Gravity.BOTTOM;
+        wmParams.gravity = Gravity.LEFT | Gravity.TOP;
         //设置悬浮窗口长宽数据
         wmParams.width = LayoutParams.MATCH_PARENT;
         wmParams.height = LayoutParams.WRAP_CONTENT;
@@ -85,6 +87,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         btn_endCall = (Button) mFloatLayout.findViewById(R.id.btn_endCall);
         btn_answer = (Button) mFloatLayout.findViewById(R.id.btn_answer);
         btn_slide = (Button) mFloatLayout.findViewById(R.id.btn_slide);
+        tv_number = (TextView) mFloatLayout.findViewById(R.id.tv_number);
         btn_endCall.setOnClickListener(this);
         btn_answer.setOnClickListener(this);
         btn_answer.setContentDescription("双击接听");
@@ -226,8 +229,8 @@ public class FxService extends AccessibilityService implements View.OnClickListe
 
     @Override
     public void onDestroy() {
+        telephonyManager.listen(null,PhoneStateListener.LISTEN_CALL_STATE);
         super.onDestroy();
-        unregisterReceiver(phoneStateListener);
     }
 
     /**
@@ -241,36 +244,54 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         }
     }
 
-    private class PhoneStateListener extends BroadcastReceiver {
 
+    public class MyPhoneLinstener extends PhoneStateListener {
+        // 当电话拨打的状态改变的时候会调用的回调方法
         @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
-                Log.e("hg", "呼出……OUTING");
-                PHONE_STATE = "OUTGOING_CALL";
-            }
-            if (intent.getAction().equals("android.intent.action.PHONE_STATE")) {
-                TelephonyManager tm = (TelephonyManager) context
-                        .getSystemService(Service.TELEPHONY_SERVICE);
-                switch (tm.getCallState()) {
-                    case TelephonyManager.CALL_STATE_RINGING:
-                        Log.e("hg", "电话状态……RINGING");
-                        PHONE_STATE = "RINGING";
-                        createFloatView(R.layout.kb_answer);
-                        break;
-                    case TelephonyManager.CALL_STATE_OFFHOOK:
-                        Log.e("hg", "电话状态……OFFHOOK");
-                        PHONE_STATE = "OFFHOOK";
-                        removeFxView();
-                        break;
-                    case TelephonyManager.CALL_STATE_IDLE:
-                        Log.e("hg", "电话状态……IDLE");
-                        PHONE_STATE = "IDLE";
-                        removeFxView();
-                        isAnswer = false;
-                        break;
-                }
+        public void onCallStateChanged(int state, String incomingNumber) {
+            super.onCallStateChanged(state, incomingNumber);
+            Log.i(TAG, incomingNumber);
+            switch (state) {
+                case TelephonyManager.CALL_STATE_OFFHOOK:
+                    PHONE_STATE = "OFFHOOK";
+                    removeFxView();
+                    break;
+                case TelephonyManager.CALL_STATE_RINGING:
+                    //查询该号码对应的名字
+                    String numbername = queryNumberName(incomingNumber);
+                    PHONE_STATE = "RINGING";
+                    createFloatView(R.layout.kb_answer);
+                    tv_number.setText(numbername);
+                    break;
+                case TelephonyManager.CALL_STATE_IDLE:
+                    removeFxView();
+                    PHONE_STATE = "IDLE";
+                    isAnswer = false;
+                    break;
             }
         }
+    }
+
+    /**
+     * 通过内容提供者 查询当前手机号码所对应的人名
+     *
+     * @param incomingNumber
+     */
+    public String queryNumberName(String incomingNumber) {
+
+        Uri uri = Uri.parse("content://com.android.contacts/data/phones/filter/" + incomingNumber);
+        ContentResolver resolver = getContentResolver();
+        Cursor cursor = resolver.query(uri,
+                new String[]{"display_name"},
+                null,
+                null,
+                null);
+
+        if (cursor.moveToFirst()) {
+            String phoneName = cursor.getString(0);
+            cursor.close();
+            return phoneName;
+        }
+        return incomingNumber;
     }
 }
