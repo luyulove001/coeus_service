@@ -34,7 +34,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     LayoutParams wmParams;
     //创建浮动窗口设置布局参数的对象
     WindowManager mWindowManager;
-    Button btn_endCall, btn_answer;
+    Button btn_endCall, btn_answer, btn_slide;
     private static final String TAG = "FxService";
     private static String PHONE_STATE = "IDLE";
     private PhoneStateListener phoneStateListener;
@@ -84,6 +84,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     private void initKbView() {
         btn_endCall = (Button) mFloatLayout.findViewById(R.id.btn_endCall);
         btn_answer = (Button) mFloatLayout.findViewById(R.id.btn_answer);
+        btn_slide = (Button) mFloatLayout.findViewById(R.id.btn_slide);
         btn_endCall.setOnClickListener(this);
         btn_answer.setOnClickListener(this);
         btn_answer.setContentDescription("双击接听");

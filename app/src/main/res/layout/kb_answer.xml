@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="bottom">
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/btn_number"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:background="@color/black"
+        android:textColor="@color/white"
+        android:textSize="25sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#fff" />
+
     <Button
         android:id="@+id/btn_answer"
         android:layout_width="match_parent"
         android:layout_height="90dp"
         android:background="@color/black"
-        android:textColor="@color/white"
         android:text="接听"
+        android:textColor="@color/white"
         android:textSize="25sp" />
 
     <View
@@ -19,9 +31,24 @@
     <Button
         android:id="@+id/btn_endCall"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="90dp"
         android:background="@color/black"
         android:text="挂断"
+        android:textColor="@color/white"
+        android:textSize="25sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#fff" />
+
+    <Button
+        android:id="@+id/btn_slide"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@color/black"
+        android:layout_marginTop="120dp"
+        android:text="双指上滑解锁"
         android:textColor="@color/white"
         android:textSize="25sp" />
 </LinearLayout>
