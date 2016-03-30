@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:id="@+id/lyt_full"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <net.tatans.coeus.views.PullDoorView
-        android:id="@+id/myImage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
     <TextView
         android:id="@+id/tv_number"
         android:layout_width="match_parent"
         android:layout_height="110dp"
         android:background="@color/black"
-        android:textColor="@color/white"
         android:gravity="center"
+        android:textColor="@color/white"
         android:textSize="25sp" />
 
     <View
@@ -35,6 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#fff" />
+
     <Button
         android:id="@+id/btn_endCall"
         android:layout_width="match_parent"
@@ -53,11 +51,10 @@
         android:id="@+id/btn_slide"
         android:layout_width="match_parent"
         android:layout_height="165dp"
-        android:background="@color/black"
         android:layout_marginTop="120dp"
+        android:background="@color/black"
         android:gravity="center"
-        android:text="双指上滑解锁"
+        android:text="双指上滑接听"
         android:textColor="@color/white"
         android:textSize="25sp" />
-    </net.tatans.coeus.views.PullDoorView>
 </LinearLayout>

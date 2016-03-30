@@ -5,14 +5,18 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
@@ -26,14 +30,13 @@ import android.widget.TextView;
 import net.tatans.coeus.network.tools.TatansApplication;
 import net.tatans.coeus.network.tools.TatansToast;
 import net.tatans.coeus.util.PhoneUtil;
-import net.tatans.coeus.views.PullDoorView;
 
 import java.util.List;
 
 public class FxService extends AccessibilityService implements View.OnClickListener {
 
     //定义浮动窗口布局
-    LinearLayout mFloatLayout;
+    LinearLayout mFloatLayout,lyt_full;
     LayoutParams wmParams;
     //创建浮动窗口设置布局参数的对象
     WindowManager mWindowManager;
@@ -44,6 +47,10 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     private String name, callCardTelocation, phoneNumber;
     private TelephonyManager telephonyManager;
     private TextView tv_number;
+    private int mLastDownY = 0;
+    private int mCurryY;
+    private int mDelY;
+
 
     @Override
     public void onCreate() {
@@ -53,7 +60,6 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                 .getSystemService(Context.TELEPHONY_SERVICE);
         telephonyManager.listen(new MyPhoneLinstener(),
                 PhoneStateListener.LISTEN_CALL_STATE);
-        PullDoorView pullDoorView = new PullDoorView(this);
         createFloatView(R.layout.kb_answer);
         System.out.println("onCreate");
     }
@@ -87,15 +93,55 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
     }
 
+    private GestureDetector mDetector;//屏幕监控
     private void initKbView() {
+        mDetector = new GestureDetector(this, new mOnGestureListener());
         btn_endCall = (Button) mFloatLayout.findViewById(R.id.btn_endCall);
         btn_answer = (Button) mFloatLayout.findViewById(R.id.btn_answer);
         btn_slide = (Button) mFloatLayout.findViewById(R.id.btn_slide);
         tv_number = (TextView) mFloatLayout.findViewById(R.id.tv_number);
+        lyt_full= (LinearLayout) mFloatLayout.findViewById(R.id.lyt_full);
         btn_endCall.setOnClickListener(this);
         btn_answer.setOnClickListener(this);
         btn_answer.setContentDescription("双击接听");
         btn_endCall.setContentDescription("双击挂断");
+        btn_slide.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return mDetector.onTouchEvent(event);
+            }
+        });
+        lyt_full.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        mLastDownY = (int) event.getY();
+                        return true;
+                    case MotionEvent.ACTION_MOVE:
+                        mCurryY = (int) event.getY();
+                        System.err.println("ACTION_MOVE=" + mCurryY);
+                        mDelY = mCurryY - mLastDownY;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        mCurryY = (int) event.getY();
+                        mDelY = mCurryY - mLastDownY;
+                        if (mDelY < 0) {
+                            Log.e("SSSS","13165416531");
+                            answerCall();
+                            removeFxView();
+                        }
+                        break;
+                }
+                return true;
+            }
+        });
+        DisplayMetrics dm = new DisplayMetrics();
+        mWindowManager.getDefaultDisplay().getMetrics(dm);
+        // 这里你一定要设置成透明背景,不然会影响你看到底层布局
+        mFloatLayout.setBackgroundColor(Color.argb(0, 0, 0, 0));
+
     }
 
     @Override
@@ -178,7 +224,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         }
     }
 
-    public void answerCall() {
+    public  void answerCall() {
         try {
             Intent intent = new Intent("android.intent.action.MEDIA_BUTTON");
             KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_HEADSETHOOK);
@@ -297,5 +343,22 @@ public class FxService extends AccessibilityService implements View.OnClickListe
             return phoneName;
         }
         return incomingNumber;
+    }
+
+    /**
+     * 手势控制暂停播放
+     * @author SiLiPing
+     */
+    private class mOnGestureListener extends GestureDetector.SimpleOnGestureListener {
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            // 向上的手势
+            if (e1.getY() - e2.getY() > 120) {
+                answerCall();
+                removeFxView();
+            }
+            return false;
+        }
     }
 }
