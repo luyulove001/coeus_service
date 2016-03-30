@@ -40,7 +40,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     LayoutParams wmParams;
     //创建浮动窗口设置布局参数的对象
     WindowManager mWindowManager;
-    Button btn_endCall, btn_answer, btn_slide;
+    LinearLayout btn_endCall, btn_answer, btn_slide;
     private static final String TAG = "FxService";
     private static String PHONE_STATE = "IDLE";
     private boolean isAnswer = false;
@@ -60,8 +60,6 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                 .getSystemService(Context.TELEPHONY_SERVICE);
         telephonyManager.listen(new MyPhoneLinstener(),
                 PhoneStateListener.LISTEN_CALL_STATE);
-        createFloatView(R.layout.kb_answer);
-        System.out.println("onCreate");
     }
 
     /**
@@ -96,15 +94,16 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     private GestureDetector mDetector;//屏幕监控
     private void initKbView() {
         mDetector = new GestureDetector(this, new mOnGestureListener());
-        btn_endCall = (Button) mFloatLayout.findViewById(R.id.btn_endCall);
-        btn_answer = (Button) mFloatLayout.findViewById(R.id.btn_answer);
-        btn_slide = (Button) mFloatLayout.findViewById(R.id.btn_slide);
+        btn_endCall = (LinearLayout) mFloatLayout.findViewById(R.id.btn_endCall);
+        btn_answer = (LinearLayout) mFloatLayout.findViewById(R.id.btn_answer);
+        btn_slide = (LinearLayout) mFloatLayout.findViewById(R.id.btn_slide);
         tv_number = (TextView) mFloatLayout.findViewById(R.id.tv_number);
         lyt_full= (LinearLayout) mFloatLayout.findViewById(R.id.lyt_full);
         btn_endCall.setOnClickListener(this);
         btn_answer.setOnClickListener(this);
-        btn_answer.setContentDescription("双击接听");
-        btn_endCall.setContentDescription("双击挂断");
+        btn_slide.setOnClickListener(this);
+        btn_answer.setContentDescription("双击接听。按钮");
+        btn_endCall.setContentDescription("双击挂断。按钮");
         btn_slide.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -121,14 +120,12 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                         return true;
                     case MotionEvent.ACTION_MOVE:
                         mCurryY = (int) event.getY();
-                        System.err.println("ACTION_MOVE=" + mCurryY);
                         mDelY = mCurryY - mLastDownY;
                         break;
                     case MotionEvent.ACTION_UP:
                         mCurryY = (int) event.getY();
                         mDelY = mCurryY - mLastDownY;
                         if (mDelY < 0) {
-                            Log.e("SSSS","13165416531");
                             answerCall();
                             removeFxView();
                         }
@@ -159,48 +156,6 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                 } else if ("IDLE".equals(PHONE_STATE)) {
                     removeFxView();
                 }
-                break;
-            case AccessibilityEvent.TYPE_VIEW_CLICKED:
-                eventText = "TYPE_VIEW_CLICKED";
-                break;
-            case AccessibilityEvent.TYPE_VIEW_FOCUSED:
-                eventText = "TYPE_VIEW_FOCUSED";
-                break;
-            case AccessibilityEvent.TYPE_VIEW_LONG_CLICKED:
-                eventText = "TYPE_VIEW_LONG_CLICKED";
-                break;
-            case AccessibilityEvent.TYPE_VIEW_SELECTED:
-                eventText = "TYPE_VIEW_SELECTED";
-                break;
-            case AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED:
-                eventText = "TYPE_VIEW_TEXT_CHANGED";
-                break;
-            case AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED:
-                eventText = "TYPE_NOTIFICATION_STATE_CHANGED";
-                break;
-            case AccessibilityEvent.TYPE_TOUCH_EXPLORATION_GESTURE_END:
-                eventText = "TYPE_TOUCH_EXPLORATION_GESTURE_END";
-                break;
-            case AccessibilityEvent.TYPE_ANNOUNCEMENT:
-                eventText = "TYPE_ANNOUNCEMENT";
-                break;
-            case AccessibilityEvent.TYPE_TOUCH_EXPLORATION_GESTURE_START:
-                eventText = "TYPE_TOUCH_EXPLORATION_GESTURE_START";
-                break;
-            case AccessibilityEvent.TYPE_VIEW_HOVER_ENTER:
-                eventText = "TYPE_VIEW_HOVER_ENTER";
-                break;
-            case AccessibilityEvent.TYPE_VIEW_HOVER_EXIT:
-                eventText = "TYPE_VIEW_HOVER_EXIT";
-                break;
-            case AccessibilityEvent.TYPE_VIEW_SCROLLED:
-                eventText = "TYPE_VIEW_SCROLLED";
-                break;
-            case AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED:
-                eventText = "TYPE_VIEW_TEXT_SELECTION_CHANGED";
-                break;
-            case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
-                eventText = "TYPE_WINDOW_CONTENT_CHANGED";
                 break;
         }
         System.out.println(eventText);
