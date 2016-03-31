@@ -5,12 +5,10 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -18,12 +16,12 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -33,7 +31,7 @@ import net.tatans.coeus.util.PhoneUtil;
 
 import java.util.List;
 
-public class FxService extends AccessibilityService implements View.OnClickListener {
+public class FxService extends AccessibilityService implements View.OnClickListener, OnTouchListener {
 
     //定义浮动窗口布局
     LinearLayout mFloatLayout,lyt_full;
@@ -47,9 +45,6 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     private String name, callCardTelocation, phoneNumber;
     private TelephonyManager telephonyManager;
     private TextView tv_number;
-    private int mLastDownY = 0;
-    private int mCurryY;
-    private int mDelY;
 
 
     @Override
@@ -104,41 +99,11 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         btn_slide.setOnClickListener(this);
         btn_answer.setContentDescription("双击接听。按钮");
         btn_endCall.setContentDescription("双击挂断。按钮");
-        btn_slide.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return mDetector.onTouchEvent(event);
-            }
-        });
-        lyt_full.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int action = event.getAction();
-                switch (action) {
-                    case MotionEvent.ACTION_DOWN:
-                        mLastDownY = (int) event.getY();
-                        return true;
-                    case MotionEvent.ACTION_MOVE:
-                        mCurryY = (int) event.getY();
-                        mDelY = mCurryY - mLastDownY;
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        mCurryY = (int) event.getY();
-                        mDelY = mCurryY - mLastDownY;
-                        if (mDelY < 0) {
-                            answerCall();
-                            removeFxView();
-                        }
-                        break;
-                }
-                return true;
-            }
-        });
-        DisplayMetrics dm = new DisplayMetrics();
-        mWindowManager.getDefaultDisplay().getMetrics(dm);
-        // 这里你一定要设置成透明背景,不然会影响你看到底层布局
-        mFloatLayout.setBackgroundColor(Color.argb(0, 0, 0, 0));
-
+        btn_slide.setOnTouchListener(this);
+        lyt_full.setOnTouchListener(this);
+        btn_answer.setOnTouchListener(this);
+        btn_endCall.setOnTouchListener(this);
+        tv_number.setOnTouchListener(this);
     }
 
     @Override
@@ -249,6 +214,11 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         }
     }
 
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return mDetector.onTouchEvent(event);
+    }
+
 
     public class MyPhoneLinstener extends PhoneStateListener {
         // 当电话拨打的状态改变的时候会调用的回调方法
@@ -312,6 +282,9 @@ public class FxService extends AccessibilityService implements View.OnClickListe
             if (e1.getY() - e2.getY() > 120) {
                 answerCall();
                 removeFxView();
+            } else if (e2.getY() - e1.getY() > 120) {
+                removeFxView();
+                PhoneUtil.endCall(FxService.this);
             }
             return false;
         }
