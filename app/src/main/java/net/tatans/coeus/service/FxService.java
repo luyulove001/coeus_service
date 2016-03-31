@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.PixelFormat;
 import android.net.Uri;
+import android.os.Handler;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -24,7 +25,9 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import net.tatans.coeus.network.speaker.Speaker;
 import net.tatans.coeus.network.tools.TatansApplication;
 import net.tatans.coeus.network.tools.TatansToast;
 import net.tatans.coeus.util.PhoneUtil;
@@ -38,14 +41,14 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     LayoutParams wmParams;
     //创建浮动窗口设置布局参数的对象
     WindowManager mWindowManager;
-    LinearLayout btn_endCall, btn_answer, btn_slide;
+    LinearLayout btn_endCall, btn_answer;
     private static final String TAG = "FxService";
     private static String PHONE_STATE = "IDLE";
     private boolean isAnswer = false;
     private String name, callCardTelocation, phoneNumber;
     private TelephonyManager telephonyManager;
     private TextView tv_number;
-
+    private Speaker mSpeaker;
 
     @Override
     public void onCreate() {
@@ -55,6 +58,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                 .getSystemService(Context.TELEPHONY_SERVICE);
         telephonyManager.listen(new MyPhoneLinstener(),
                 PhoneStateListener.LISTEN_CALL_STATE);
+        mSpeaker = Speaker.getInstance(this);
     }
 
     /**
@@ -70,12 +74,12 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         //设置图片格式，效果为背景透明
         wmParams.format = PixelFormat.RGBA_8888;
         //设置浮动窗口不可聚焦（实现操作除浮动窗口外的其他可见窗口的操作）
-        wmParams.flags = LayoutParams.FLAG_NOT_FOCUSABLE;
+        wmParams.flags = LayoutParams.FLAG_ALT_FOCUSABLE_IM;
         //调整悬浮窗显示的停靠位置为左侧置顶
         wmParams.gravity = Gravity.LEFT | Gravity.TOP;
         //设置悬浮窗口长宽数据
         wmParams.width = LayoutParams.MATCH_PARENT;
-        wmParams.height = LayoutParams.WRAP_CONTENT;
+        wmParams.height = LayoutParams.MATCH_PARENT;
         LayoutInflater inflater = LayoutInflater.from(getApplication());
         //获取浮动窗口视图所在布局
         mFloatLayout = (LinearLayout) inflater.inflate(id, null);
@@ -91,15 +95,12 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         mDetector = new GestureDetector(this, new mOnGestureListener());
         btn_endCall = (LinearLayout) mFloatLayout.findViewById(R.id.btn_endCall);
         btn_answer = (LinearLayout) mFloatLayout.findViewById(R.id.btn_answer);
-        btn_slide = (LinearLayout) mFloatLayout.findViewById(R.id.btn_slide);
         tv_number = (TextView) mFloatLayout.findViewById(R.id.tv_number);
         lyt_full= (LinearLayout) mFloatLayout.findViewById(R.id.lyt_full);
         btn_endCall.setOnClickListener(this);
         btn_answer.setOnClickListener(this);
-        btn_slide.setOnClickListener(this);
-        btn_answer.setContentDescription("双击接听。按钮");
-        btn_endCall.setContentDescription("双击挂断。按钮");
-        btn_slide.setOnTouchListener(this);
+        btn_answer.setContentDescription("点击接听。按钮");
+        btn_endCall.setContentDescription("点击挂断。按钮");
         lyt_full.setOnTouchListener(this);
         btn_answer.setOnTouchListener(this);
         btn_endCall.setOnTouchListener(this);
@@ -157,6 +158,10 @@ public class FxService extends AccessibilityService implements View.OnClickListe
             sendOrderedBroadcast(mediaButtonIntent, null);
         }
         isAnswer = true;
+        interrupt();
+    }
+
+    private void interrupt() {
         try {
             AccessibilityManager accessibilityManager = (AccessibilityManager) TatansApplication.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
             accessibilityManager.interrupt();
@@ -237,6 +242,15 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                     PHONE_STATE = "RINGING";
                     createFloatView(R.layout.kb_answer);
                     tv_number.setText(numbername);
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            interrupt();
+                        }
+                    }, 100);
+//                    TatansToast.showAndCancel(numbername);
+                    mSpeaker.speech(numbername);
                     break;
                 case TelephonyManager.CALL_STATE_IDLE:
                     removeFxView();
