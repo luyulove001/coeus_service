@@ -25,7 +25,6 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import net.tatans.coeus.network.speaker.Speaker;
 import net.tatans.coeus.network.tools.TatansApplication;
@@ -49,6 +48,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     private TelephonyManager telephonyManager;
     private TextView tv_number;
     private Speaker mSpeaker;
+    private Handler handler = new Handler();
 
     @Override
     public void onCreate() {
@@ -238,19 +238,23 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                     break;
                 case TelephonyManager.CALL_STATE_RINGING:
                     //查询该号码对应的名字
-                    String numbername = queryNumberName(incomingNumber);
+                    final String numbername = queryNumberName(incomingNumber);
                     PHONE_STATE = "RINGING";
                     createFloatView(R.layout.kb_answer);
                     tv_number.setText(numbername);
-                    Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             interrupt();
                         }
                     }, 100);
-//                    TatansToast.showAndCancel(numbername);
-                    mSpeaker.speech(numbername);
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mSpeaker.speech(numbername);
+                            Log.e("antony", "speech");
+                        }
+                    }, 200);
                     break;
                 case TelephonyManager.CALL_STATE_IDLE:
                     removeFxView();

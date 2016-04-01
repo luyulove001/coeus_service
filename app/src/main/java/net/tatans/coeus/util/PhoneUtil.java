@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import java.lang.reflect.InvocationTargetException;
@@ -17,7 +18,7 @@ public class PhoneUtil {
 	public static String TAG = PhoneUtil.class.getSimpleName();
 
 	/**
-	 * �Ҷϵ绰
+	 * 挂断
 	 * 
 	 * @param context
 	 */
@@ -31,6 +32,7 @@ public class PhoneUtil {
 				endCallMethod.setAccessible(true);
 
 				endCallMethod.invoke(telephonyObject);
+				Log.e("antony", "挂断");
 			}
 		} catch (SecurityException e) {
 			e.printStackTrace();
@@ -74,7 +76,7 @@ public class PhoneUtil {
 	}
 
 	/**
-	 * ͨ��������õķ����������绰���÷���ֻ��android 2.3֮ǰ��ϵͳ����Ч��
+	 * 通过反射接听
 	 * 
 	 * @param context
 	 */
@@ -106,7 +108,7 @@ public class PhoneUtil {
 	}
 
 	/**
-	 * α��һ�����߶������룬�����������Ĺ㲥����ϵͳ��ʼ�����绰��
+	 * 通过广播接听（模拟插入耳机）
 	 * 
 	 * @param context
 	 */
@@ -144,7 +146,7 @@ public class PhoneUtil {
 	}
 
 	/**
-	 * �����绰
+	 * 接听
 	 * 
 	 * @param context
 	 */
@@ -157,7 +159,7 @@ public class PhoneUtil {
 	}
 
 	/**
-	 * ��绰
+	 * 打电话
 	 * 
 	 * @param context
 	 * @param phoneNumber
@@ -175,7 +177,7 @@ public class PhoneUtil {
 	}
 
 	/**
-	 * ���绰
+	 * 调用打电话界面
 	 * 
 	 * @param context
 	 * @param phoneNumber
