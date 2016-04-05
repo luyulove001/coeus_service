@@ -36,11 +36,14 @@ import java.util.List;
 public class FxService extends AccessibilityService implements View.OnClickListener, OnTouchListener {
 
     //定义浮动窗口布局
-    LinearLayout mFloatLayout,lyt_full;
-    LayoutParams wmParams;
+    private static LinearLayout mFloatLayout;
+    private LinearLayout lyt_full;
+    private LayoutParams wmParams;
     //创建浮动窗口设置布局参数的对象
-    WindowManager mWindowManager;
-    LinearLayout btn_endCall, btn_answer;
+    private static WindowManager mWindowManager;
+    private LinearLayout btn_endCall, btn_answer;
+    private TextView tv_main_number, tv_main_end;
+    private String numbername;
     private static final String TAG = "FxService";
     private static String PHONE_STATE = "IDLE";
     private boolean isAnswer = false;
@@ -59,16 +62,16 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         telephonyManager.listen(new MyPhoneLinstener(),
                 PhoneStateListener.LISTEN_CALL_STATE);
         mSpeaker = Speaker.getInstance(this);
+        wmParams = new LayoutParams();
+        mWindowManager = (WindowManager) getApplication().getSystemService(getApplication().WINDOW_SERVICE);
+        mDetector = new GestureDetector(this, new mOnGestureListener());
     }
 
     /**
      * 创建数字键盘悬浮窗界面
      */
     private void createFloatView(int id) {
-        wmParams = new LayoutParams();
-        //获取的是WindowManagerImpl.CompatModeWrapper
-        mWindowManager = (WindowManager) getApplication().getSystemService(getApplication().WINDOW_SERVICE);
-        Log.i(TAG, "mWindowManager--->" + mWindowManager);
+        removeFxView();
         //设置window type
         wmParams.type = LayoutParams.TYPE_PHONE;
         //设置图片格式，效果为背景透明
@@ -90,9 +93,44 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
     }
 
+    /**
+     * 创建数字键盘悬浮窗界面
+     */
+    private void createView() {
+        removeFxView();
+        //设置window type
+        wmParams.type = LayoutParams.TYPE_SYSTEM_ERROR;
+        //设置图片格式，效果为背景透明
+        wmParams.format = PixelFormat.RGBA_8888;
+        //设置浮动窗口不可聚焦（实现操作除浮动窗口外的其他可见窗口的操作）
+        wmParams.flags = LayoutParams.FLAG_ALT_FOCUSABLE_IM;
+        //调整悬浮窗显示的停靠位置为左侧置顶
+        wmParams.gravity = Gravity.LEFT | Gravity.TOP;
+        //设置悬浮窗口长宽数据
+        wmParams.width = LayoutParams.MATCH_PARENT;
+        wmParams.height = LayoutParams.WRAP_CONTENT;
+        LayoutInflater inflater = LayoutInflater.from(getApplication());
+        //获取浮动窗口视图所在布局
+        mFloatLayout = (LinearLayout) inflater.inflate(R.layout.activity_main, null);
+        tv_main_number = (TextView) mFloatLayout.findViewById(R.id.tv_main_number);
+        tv_main_end = (TextView) mFloatLayout.findViewById(R.id.tv_main_end);
+        if (numbername != null || !"".equals(numbername))
+            tv_main_number.setText(queryNumberName(numbername));
+        tv_main_end.setText("挂断");
+        tv_main_end.setContentDescription("挂断。按钮");
+        tv_main_end.setOnClickListener(this);
+        lyt_full = (LinearLayout) mFloatLayout.findViewById(R.id.lyt_full);
+        lyt_full.setOnTouchListener(this);
+        tv_main_number.setOnTouchListener(this);
+        tv_main_end.setOnTouchListener(this);
+        //添加mFloatLayout
+        mWindowManager.addView(mFloatLayout, wmParams);
+        mFloatLayout.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+    }
+
     private GestureDetector mDetector;//屏幕监控
     private void initKbView() {
-        mDetector = new GestureDetector(this, new mOnGestureListener());
         btn_endCall = (LinearLayout) mFloatLayout.findViewById(R.id.btn_endCall);
         btn_answer = (LinearLayout) mFloatLayout.findViewById(R.id.btn_answer);
         tv_number = (TextView) mFloatLayout.findViewById(R.id.tv_number);
@@ -140,7 +178,6 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                 break;
             case R.id.btn_answer:
                 answerCall();
-                removeFxView();
                 break;
         }
     }
@@ -157,6 +194,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
             mediaButtonIntent.putExtra(Intent.EXTRA_KEY_EVENT, keyEvent);
             sendOrderedBroadcast(mediaButtonIntent, null);
         }
+        createView();
         isAnswer = true;
         interrupt();
     }
@@ -211,7 +249,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     /**
      * 移除悬浮窗口
      */
-    public void removeFxView() {
+    public static void removeFxView() {
         if (mFloatLayout != null) {
             //移除悬浮窗口
             mWindowManager.removeView(mFloatLayout);
@@ -234,11 +272,11 @@ public class FxService extends AccessibilityService implements View.OnClickListe
             switch (state) {
                 case TelephonyManager.CALL_STATE_OFFHOOK:
                     PHONE_STATE = "OFFHOOK";
-                    removeFxView();
+//                    removeFxView();
                     break;
                 case TelephonyManager.CALL_STATE_RINGING:
                     //查询该号码对应的名字
-                    final String numbername = queryNumberName(incomingNumber);
+                    numbername = queryNumberName(incomingNumber);
                     PHONE_STATE = "RINGING";
                     createFloatView(R.layout.kb_answer);
                     tv_number.setText(numbername);
@@ -299,7 +337,6 @@ public class FxService extends AccessibilityService implements View.OnClickListe
             // 向上的手势
             if (e1.getY() - e2.getY() > 120) {
                 answerCall();
-                removeFxView();
             } else if (e2.getY() - e1.getY() > 120) {
                 removeFxView();
                 PhoneUtil.endCall(FxService.this);
