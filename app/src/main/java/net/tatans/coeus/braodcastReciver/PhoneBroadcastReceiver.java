@@ -91,7 +91,8 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver implements
                     MainActivity.activity.finish();
                 }
                 FxService.removeFxView();
-                FxService.interrupt(480);
+                FxService.interrupt(450);
+                FxService.interrupt(600);
                 firstSensor = 1;
                 Log.d("myTag", "222222");
             } else if (firstSensor == 1) {
