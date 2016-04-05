@@ -200,7 +200,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         }
         createView();
         isAnswer = true;
-        interrupt();
+        interrupt(500);
     }
 
     private void interrupt() {
@@ -208,6 +208,22 @@ public class FxService extends AccessibilityService implements View.OnClickListe
             AccessibilityManager accessibilityManager = (AccessibilityManager) TatansApplication.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
             accessibilityManager.interrupt();
             TatansToast.cancel();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void interrupt(int score) {
+        try {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    AccessibilityManager accessibilityManager = (AccessibilityManager) TatansApplication.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+                    accessibilityManager.interrupt();
+                    TatansToast.cancel();
+                    Log.e("antony", "打断");
+                }
+            }, score);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -284,19 +300,14 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                     PHONE_STATE = "RINGING";
                     createFloatView(R.layout.kb_answer);
                     tv_number.setText(numbername);
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            interrupt();
-                        }
-                    }, 100);
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mSpeaker.speech(numbername);
-                            Log.e("antony", "speech");
-                        }
-                    }, 200);
+                    interrupt(100);
+//                    handler.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            mSpeaker.speech(numbername);
+//                            Log.e("antony", "speech");
+//                        }
+//                    }, 500);
                     break;
                 case TelephonyManager.CALL_STATE_IDLE:
                     removeFxView();

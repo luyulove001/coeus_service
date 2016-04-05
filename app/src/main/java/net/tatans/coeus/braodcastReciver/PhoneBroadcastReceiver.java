@@ -15,6 +15,7 @@ import android.util.Log;
 import net.tatans.coeus.service.FxService;
 import net.tatans.coeus.service.InCallAccessibilityService;
 import net.tatans.coeus.service.MainActivity;
+import net.tatans.coeus.util.PhoneUtil;
 
 /**
  * Created by John on 2016/1/5.
@@ -90,10 +91,12 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver implements
                     MainActivity.activity.finish();
                 }
                 FxService.removeFxView();
+                FxService.interrupt(480);
                 firstSensor = 1;
                 Log.d("myTag", "222222");
             } else if (firstSensor == 1) {
                 audioManager.setSpeakerphoneOn(true);
+                FxService.interrupt(200);
                 Log.d("myTag", "1111");
             }
                                                             /*if(firstSensor==1){
