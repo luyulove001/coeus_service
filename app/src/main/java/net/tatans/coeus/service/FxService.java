@@ -179,6 +179,10 @@ public class FxService extends AccessibilityService implements View.OnClickListe
             case R.id.btn_answer:
                 answerCall();
                 break;
+            case R.id.tv_main_end:
+                removeFxView();
+                PhoneUtil.endCall(FxService.this);
+                break;
         }
     }
 
