@@ -301,13 +301,13 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                     createFloatView(R.layout.kb_answer);
                     tv_number.setText(numbername);
                     interrupt(100);
-//                    handler.postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            mSpeaker.speech(numbername);
-//                            Log.e("antony", "speech");
-//                        }
-//                    }, 500);
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mSpeaker.speech(numbername);
+                            Log.e("antony", "speech");
+                        }
+                    }, 500);
                     break;
                 case TelephonyManager.CALL_STATE_IDLE:
                     removeFxView();
