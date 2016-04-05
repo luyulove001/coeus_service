@@ -36,7 +36,7 @@ import java.util.List;
 public class FxService extends AccessibilityService implements View.OnClickListener, OnTouchListener {
 
     //定义浮动窗口布局
-    private static LinearLayout mFloatLayout;
+    private static LinearLayout mFloatLayout, mAnswerLayout;
     private LinearLayout lyt_full;
     private LayoutParams wmParams;
     //创建浮动窗口设置布局参数的对象
@@ -111,21 +111,21 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         wmParams.height = LayoutParams.WRAP_CONTENT;
         LayoutInflater inflater = LayoutInflater.from(getApplication());
         //获取浮动窗口视图所在布局
-        mFloatLayout = (LinearLayout) inflater.inflate(R.layout.activity_main, null);
-        tv_main_number = (TextView) mFloatLayout.findViewById(R.id.tv_main_number);
-        tv_main_end = (TextView) mFloatLayout.findViewById(R.id.tv_main_end);
+        mAnswerLayout = (LinearLayout) inflater.inflate(R.layout.activity_main, null);
+        tv_main_number = (TextView) mAnswerLayout.findViewById(R.id.tv_main_number);
+        tv_main_end = (TextView) mAnswerLayout.findViewById(R.id.tv_main_end);
         if (numbername != null || !"".equals(numbername))
             tv_main_number.setText(queryNumberName(numbername));
         tv_main_end.setText("挂断");
         tv_main_end.setContentDescription("挂断。按钮");
         tv_main_end.setOnClickListener(this);
-        lyt_full = (LinearLayout) mFloatLayout.findViewById(R.id.lyt_full);
+        lyt_full = (LinearLayout) mAnswerLayout.findViewById(R.id.lyt_full);
         lyt_full.setOnTouchListener(this);
         tv_main_number.setOnTouchListener(this);
         tv_main_end.setOnTouchListener(this);
         //添加mFloatLayout
-        mWindowManager.addView(mFloatLayout, wmParams);
-        mFloatLayout.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+        mWindowManager.addView(mAnswerLayout, wmParams);
+        mAnswerLayout.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
     }
 
@@ -274,6 +274,13 @@ public class FxService extends AccessibilityService implements View.OnClickListe
             //移除悬浮窗口
             mWindowManager.removeView(mFloatLayout);
             mFloatLayout = null;
+        }
+    }
+
+    public static void removeAnswerView(){
+        if (mAnswerLayout != null){
+            mWindowManager.removeView(mAnswerLayout);
+            mAnswerLayout = null;
         }
     }
 

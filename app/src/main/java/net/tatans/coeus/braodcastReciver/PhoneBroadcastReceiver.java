@@ -90,7 +90,7 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver implements
                     MainActivity.lockLayer.unlock();
                     MainActivity.activity.finish();
                 }
-                FxService.removeFxView();
+                FxService.removeAnswerView();
                 FxService.interrupt(450);
                 FxService.interrupt(600);
                 firstSensor = 1;
