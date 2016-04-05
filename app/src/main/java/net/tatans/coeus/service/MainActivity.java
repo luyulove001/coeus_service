@@ -72,6 +72,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         switch (v.getId()) {
             case R.id.tv_main_end:
                 PhoneUtil.endCall(MainActivity.this);
+                removeFxView();
                 break;
         }
     }
