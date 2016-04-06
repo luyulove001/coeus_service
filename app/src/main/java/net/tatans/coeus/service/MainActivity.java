@@ -36,7 +36,7 @@ import net.tatans.coeus.util.PhoneUtil;
 
 public class MainActivity extends Activity implements View.OnClickListener, View.OnTouchListener{
     private LinearLayout lyt_full;
-    private TextView tv_main_number, tv_main_end;
+    private TextView tv_main_number, tv_main_end, tv_main_more;
     private GestureDetector mDetector;//屏幕监控
     private View lock;
     public static LockLayer lockLayer;
@@ -59,14 +59,19 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         mDetector = new GestureDetector(this, new mOnGestureListener());
         tv_main_number = (TextView) lock.findViewById(R.id.tv_main_number);
         tv_main_end = (TextView) lock.findViewById(R.id.tv_main_end);
+        tv_main_more = (TextView) lock.findViewById(R.id.tv_main_more);
         tv_main_number.setText(queryNumberName(getIntent().getStringExtra("EXTRA_PHONE_NUMBER")));
         tv_main_end.setText("挂断");
         tv_main_end.setContentDescription("挂断。按钮");
         tv_main_end.setOnClickListener(this);
+        tv_main_more.setText("更多");
+        tv_main_more.setContentDescription("更多。按钮");
+        tv_main_more.setOnClickListener(this);
         lyt_full = (LinearLayout) lock.findViewById(R.id.lyt_full);
         lyt_full.setOnTouchListener(this);
         tv_main_number.setOnTouchListener(this);
         tv_main_end.setOnTouchListener(this);
+        tv_main_more.setOnTouchListener(this);
     }
 
     @Override
@@ -74,6 +79,9 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         switch (v.getId()) {
             case R.id.tv_main_end:
                 PhoneUtil.endCall(MainActivity.this);
+                removeFxView();
+                break;
+            case R.id.tv_main_more:
                 removeFxView();
                 break;
         }

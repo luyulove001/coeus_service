@@ -86,11 +86,11 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver implements
         if (its != null && event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
             if (audioManager.isWiredHeadsetOn() || audioManager.isBluetoothScoOn() || its[0] == 0.0) {
                 audioManager.setSpeakerphoneOn(false);
-                if (MainActivity.lockLayer != null && MainActivity.activity != null) {
-                    MainActivity.lockLayer.unlock();
-                    MainActivity.activity.finish();
-                }
-                FxService.removeAnswerView();
+//                if (MainActivity.lockLayer != null && MainActivity.activity != null) {
+//                    MainActivity.lockLayer.unlock();
+//                    MainActivity.activity.finish();
+//                }s
+//                FxService.removeAnswerView();
                 FxService.interrupt(450);
                 FxService.interrupt(600);
                 firstSensor = 1;

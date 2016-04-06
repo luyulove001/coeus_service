@@ -44,7 +44,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     //创建浮动窗口设置布局参数的对象
     private static WindowManager mWindowManager;
     private LinearLayout btn_endCall, btn_answer;
-    private TextView tv_main_number, tv_main_end;
+    private TextView tv_main_number, tv_main_end, tv_main_more;
     private String numbername;
     private static final String TAG = "FxService";
     private static String PHONE_STATE = "IDLE";
@@ -110,21 +110,26 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         wmParams.gravity = Gravity.LEFT | Gravity.TOP;
         //设置悬浮窗口长宽数据
         wmParams.width = LayoutParams.MATCH_PARENT;
-        wmParams.height = LayoutParams.WRAP_CONTENT;
+        wmParams.height = LayoutParams.MATCH_PARENT;
         LayoutInflater inflater = LayoutInflater.from(getApplication());
         //获取浮动窗口视图所在布局
         mAnswerLayout = (LinearLayout) inflater.inflate(R.layout.activity_main, null);
         tv_main_number = (TextView) mAnswerLayout.findViewById(R.id.tv_main_number);
         tv_main_end = (TextView) mAnswerLayout.findViewById(R.id.tv_main_end);
+        tv_main_more = (TextView) mAnswerLayout.findViewById(R.id.tv_main_more);
+        tv_main_more.setText("更多");
+        tv_main_more.setContentDescription("更多。按钮");
         if (numbername != null || !"".equals(numbername))
             tv_main_number.setText(queryNumberName(numbername));
         tv_main_end.setText("挂断");
         tv_main_end.setContentDescription("挂断。按钮");
         tv_main_end.setOnClickListener(this);
+        tv_main_more.setOnClickListener(this);
         lyt_full = (LinearLayout) mAnswerLayout.findViewById(R.id.lyt_full);
         lyt_full.setOnTouchListener(this);
         tv_main_number.setOnTouchListener(this);
         tv_main_end.setOnTouchListener(this);
+        tv_main_more.setOnTouchListener(this);
         //添加mFloatLayout
         mWindowManager.addView(mAnswerLayout, wmParams);
         mAnswerLayout.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
@@ -182,8 +187,11 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                 answerCall();
                 break;
             case R.id.tv_main_end:
-                removeFxView();
+                removeAnswerView();
                 PhoneUtil.endCall(FxService.this);
+                break;
+            case R.id.tv_main_more:
+                removeAnswerView();
                 break;
         }
     }
@@ -320,6 +328,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                     break;
                 case TelephonyManager.CALL_STATE_IDLE:
                     removeFxView();
+                    removeAnswerView();
                     PHONE_STATE = "IDLE";
                     isAnswer = false;
                     break;

@@ -34,8 +34,8 @@ public class LockLayer {
 		wmParams.format = PixelFormat.RGBA_8888;
 		// ����Window flag
 //		wmParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
-		wmParams.width = LayoutParams.FILL_PARENT;
-		wmParams.height = LayoutParams.WRAP_CONTENT;
+		wmParams.width = LayoutParams.MATCH_PARENT;
+		wmParams.height = LayoutParams.MATCH_PARENT;
 		wmParams.gravity = Gravity.LEFT | Gravity.TOP;
 		wmParams.flags = 1280;
 	}
