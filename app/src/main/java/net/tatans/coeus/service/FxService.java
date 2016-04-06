@@ -8,8 +8,10 @@ import android.database.Cursor;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Handler;
+import android.provider.ContactsContract;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -331,20 +333,27 @@ public class FxService extends AccessibilityService implements View.OnClickListe
      * @param incomingNumber
      */
     public String queryNumberName(String incomingNumber) {
-
-        Uri uri = Uri.parse("content://com.android.contacts/data/phones/filter/" + incomingNumber);
+//        Uri uri = Uri.parse("content://com.android.contacts/data/phones/filter/" + incomingNumber);
+        String[] projection = { ContactsContract.PhoneLookup.DISPLAY_NAME,
+                ContactsContract.PhoneLookup.NUMBER };
+        Uri uri = Uri.withAppendedPath(
+                ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+                Uri.encode(incomingNumber));
         ContentResolver resolver = getContentResolver();
         Cursor cursor = resolver.query(uri,
-                new String[]{"display_name"},
+                projection,
                 null,
                 null,
                 null);
-
-        if (cursor.moveToFirst()) {
-            String phoneName = cursor.getString(0);
-            cursor.close();
+        while (cursor.moveToNext()) {
+            String phoneName = cursor.getString(cursor
+                    .getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));// 缓存的名称与电话号码，如果它的存在
+            if (TextUtils.isEmpty(phoneName))
+                continue;
             return phoneName;
         }
+        cursor.close();
+
         return incomingNumber;
     }
 
