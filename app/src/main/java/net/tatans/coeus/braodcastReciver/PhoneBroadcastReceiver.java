@@ -9,9 +9,11 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
+import android.os.Handler;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import net.tatans.coeus.network.tools.TatansApplication;
 import net.tatans.coeus.service.FxService;
 import net.tatans.coeus.service.InCallAccessibilityService;
 import net.tatans.coeus.service.MainActivity;
@@ -26,15 +28,21 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver implements
     TelephonyManager tManager;
     AudioManager audioManager;
     SensorManager sensorManager;
-
+    String EXTRA_PHONE_NUMBER;
     @Override
     public void onReceive(Context context, Intent intent) {
         if ("android.intent.action.NEW_OUTGOING_CALL".equals(intent.getAction())) {
-            String EXTRA_PHONE_NUMBER = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
-            Intent i = new Intent(context, MainActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            i.putExtra("EXTRA_PHONE_NUMBER", EXTRA_PHONE_NUMBER);
-            context.startActivity(i);
+            EXTRA_PHONE_NUMBER = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent i = new Intent(TatansApplication.getContext(), MainActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    i.putExtra("EXTRA_PHONE_NUMBER", EXTRA_PHONE_NUMBER);
+                    TatansApplication.getContext().startActivity(i);
+                }
+            },100);
+
         } else {
             tManager = (TelephonyManager) context
                     .getSystemService(Service.TELEPHONY_SERVICE);
