@@ -1,7 +1,9 @@
 <resources>
-    <string name="app_name">tatans_service</string>
+    <string name="app_name">天坦服务</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="description">通话时可以自动切换扬声器，贴近关闭，离开打开，还可自动打开通话界面的拨号键盘。。。。。</string>
+    <string name="answer_description">启用“接听辅助”服务后，您的手机可以为盲人和视力不好的用户提供电话接听快捷操作。例如，来电时手机会弹出一个列表操作界面，包括接听、挂断等按钮</string>
+    <string name="answer">接听辅助</string>
     <string name="action_settings">Settings</string>
 </resources>
