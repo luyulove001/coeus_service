@@ -41,7 +41,7 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver implements
                     i.putExtra("EXTRA_PHONE_NUMBER", EXTRA_PHONE_NUMBER);
                     TatansApplication.getContext().startActivity(i);
                 }
-            },100);
+            },200);
 
         } else {
             tManager = (TelephonyManager) context
