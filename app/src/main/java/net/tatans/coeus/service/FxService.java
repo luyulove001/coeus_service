@@ -72,7 +72,8 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     /**
      * 创建数字键盘悬浮窗界面
      */
-    private void createFloatView(int id) {
+    private void createFloatView(int id, String number) {
+        interrupt();
         removeFxView();
         //设置window type
         wmParams.type = LayoutParams.TYPE_PHONE;
@@ -88,6 +89,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         LayoutInflater inflater = LayoutInflater.from(getApplication());
         //获取浮动窗口视图所在布局
         mFloatLayout = (LinearLayout) inflater.inflate(id, null);
+        mFloatLayout.setContentDescription("来电:" + number + "。来电:" + number);
         //添加mFloatLayout
         mWindowManager.addView(mFloatLayout, wmParams);
         initKbView();
@@ -315,16 +317,16 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                     //查询该号码对应的名字
                     numbername = queryNumberName(incomingNumber);
                     PHONE_STATE = "RINGING";
-                    createFloatView(R.layout.kb_answer);
+                    createFloatView(R.layout.kb_answer, numbername);
                     tv_number.setText(numbername);
-                    interrupt(100);
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mSpeaker.speech(numbername);
-                            Log.e("antony", "speech");
-                        }
-                    }, 500);
+//                    interrupt(100);
+//                    handler.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            mSpeaker.speech(numbername);
+//                            Log.e("antony", "speech");
+//                        }
+//                    }, 500);
                     break;
                 case TelephonyManager.CALL_STATE_IDLE:
                     removeFxView();
