@@ -89,7 +89,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         LayoutInflater inflater = LayoutInflater.from(getApplication());
         //获取浮动窗口视图所在布局
         mFloatLayout = (LinearLayout) inflater.inflate(id, null);
-        mFloatLayout.setContentDescription("来电:" + number + "。来电:" + number);
+        mFloatLayout.setContentDescription("。");
         //添加mFloatLayout
         mWindowManager.addView(mFloatLayout, wmParams);
         initKbView();
@@ -323,8 +323,8 @@ public class FxService extends AccessibilityService implements View.OnClickListe
 //                    handler.postDelayed(new Runnable() {
 //                        @Override
 //                        public void run() {
-//                            mSpeaker.speech(numbername);
-//                            Log.e("antony", "speech");
+                            mSpeaker.speech("来电:" + numbername + "。来电:" + numbername);
+                            Log.e("antony", "speech");
 //                        }
 //                    }, 500);
                     break;

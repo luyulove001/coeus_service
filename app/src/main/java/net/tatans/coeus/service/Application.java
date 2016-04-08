@@ -12,8 +12,8 @@ public class Application extends TatansApplication{
     public void onCreate() {
         super.onCreate();
         CrashHandler crashHandler = CrashHandler.getInstance();
-        crashHandler.initTatans("countdown");
-        TatansLog.TAG="countdown";
+        crashHandler.initTatans("service");
+        TatansLog.TAG="myTag";
         TatansLog.d("Application");
     }
 }
