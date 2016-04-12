@@ -61,6 +61,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         tv_main_end = (TextView) lock.findViewById(R.id.tv_main_end);
         tv_main_more = (TextView) lock.findViewById(R.id.tv_main_more);
         tv_main_number.setText(queryNumberName(getIntent().getStringExtra("EXTRA_PHONE_NUMBER")));
+        lyt_full = (LinearLayout) lock.findViewById(R.id.lyt_full);
+        lyt_full.setContentDescription(queryNumberName(getIntent().getStringExtra("EXTRA_PHONE_NUMBER")));
         tv_main_end.setText("挂断");
         tv_main_end.setContentDescription("挂断。按钮");
         tv_main_end.setOnClickListener(this);

@@ -119,10 +119,13 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         tv_main_number = (TextView) mAnswerLayout.findViewById(R.id.tv_main_number);
         tv_main_end = (TextView) mAnswerLayout.findViewById(R.id.tv_main_end);
         tv_main_more = (TextView) mAnswerLayout.findViewById(R.id.tv_main_more);
+        lyt_full = (LinearLayout) mAnswerLayout.findViewById(R.id.lyt_full);
         tv_main_more.setText("更多");
         tv_main_more.setContentDescription("更多。按钮");
-        if (numbername != null || !"".equals(numbername))
+        if (numbername != null || !"".equals(numbername)) {
             tv_main_number.setText(queryNumberName(numbername));
+            lyt_full.setContentDescription(numbername);
+        }
         tv_main_end.setText("挂断");
         tv_main_end.setContentDescription("挂断。按钮");
         tv_main_end.setOnClickListener(this);
