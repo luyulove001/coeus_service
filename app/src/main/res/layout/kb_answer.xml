@@ -10,11 +10,11 @@
         android:id="@+id/tv_number"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="4"
         android:background="@color/black"
         android:gravity="center_vertical"
         android:textColor="@color/white"
-        android:layout_marginLeft="17dp"
+        android:paddingLeft="17dp"
         android:textSize="38sp" />
 
     <View

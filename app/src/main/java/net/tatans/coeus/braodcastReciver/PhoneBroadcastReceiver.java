@@ -55,9 +55,6 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver implements
                 case TelephonyManager.CALL_STATE_RINGING:
                     Log.d("myTag", "comming");
                     InCallAccessibilityService.flag = false;
-//                                                                Intent i = new Intent(context, MainActivity.class);
-//                                                                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                                                                context.startActivity(i);
                     break;
 
                 // 通话过程

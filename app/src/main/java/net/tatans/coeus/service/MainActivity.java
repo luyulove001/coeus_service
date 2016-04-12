@@ -78,8 +78,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_main_end:
-                PhoneUtil.endCall(MainActivity.this);
-                removeFxView();
+                endCall();
                 break;
             case R.id.tv_main_more:
                 removeFxView();
@@ -137,11 +136,20 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             // 向上的手势
             if (e1.getY() - e2.getY() > 120) {
             } else if (e2.getY() - e1.getY() > 120) {
-                removeFxView();
-                PhoneUtil.endCall(MainActivity.this);
+                endCall();
             }
             return false;
         }
+    }
+
+    private void endCall() {
+        PhoneUtil.endCall(MainActivity.this);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                removeFxView();
+            }
+        }, 500);
     }
 
     /**

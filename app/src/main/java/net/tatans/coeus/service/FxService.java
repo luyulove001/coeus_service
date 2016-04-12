@@ -72,7 +72,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     /**
      * 创建数字键盘悬浮窗界面
      */
-    private void createFloatView(int id, String number) {
+    private void createFloatView(int id) {
         interrupt();
         removeFxView();
         //设置window type
@@ -182,20 +182,29 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_endCall:
-                removeFxView();
-                PhoneUtil.endCall(FxService.this);
+                endCall();
                 break;
             case R.id.btn_answer:
                 answerCall();
                 break;
             case R.id.tv_main_end:
-                removeAnswerView();
-                PhoneUtil.endCall(FxService.this);
+                endCall();
                 break;
             case R.id.tv_main_more:
                 removeAnswerView();
                 break;
         }
+    }
+
+    private void endCall() {
+        PhoneUtil.endCall(FxService.this);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                removeFxView();
+                removeAnswerView();
+            }
+        }, 500);
     }
 
     public  void answerCall() {
@@ -317,16 +326,10 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                     //查询该号码对应的名字
                     numbername = queryNumberName(incomingNumber);
                     PHONE_STATE = "RINGING";
-                    createFloatView(R.layout.kb_answer, numbername);
+                    createFloatView(R.layout.kb_answer);
                     tv_number.setText(numbername);
-//                    interrupt(100);
-//                    handler.postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-                            mSpeaker.speech("来电:" + numbername + "。来电:" + numbername);
-                            Log.e("antony", "speech");
-//                        }
-//                    }, 500);
+                    mSpeaker.speech("来电:" + numbername + "。来电:" + numbername);
+                    Log.e("antony", "speech");
                     break;
                 case TelephonyManager.CALL_STATE_IDLE:
                     removeFxView();
@@ -380,8 +383,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
             if (e1.getY() - e2.getY() > 120) {
                 answerCall();
             } else if (e2.getY() - e1.getY() > 120) {
-                removeFxView();
-                PhoneUtil.endCall(FxService.this);
+                endCall();
             }
             return false;
         }
