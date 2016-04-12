@@ -78,10 +78,15 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver implements
                     InCallAccessibilityService.closed = true;
                     sensorManager.unregisterListener(this);
                     Log.d("myTag", "hangup");
-                    if (MainActivity.lockLayer != null && MainActivity.activity != null) {
-                        MainActivity.lockLayer.unlock();
-                        MainActivity.activity.finish();
-                    }
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (MainActivity.lockLayer != null && MainActivity.activity != null) {
+                                MainActivity.lockLayer.unlock();
+                                MainActivity.activity.finish();
+                            }
+                        }
+                    }, 1500);
                     break;
             }
         }

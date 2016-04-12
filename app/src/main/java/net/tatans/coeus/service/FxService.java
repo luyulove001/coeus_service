@@ -332,8 +332,13 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                     Log.e("antony", "speech");
                     break;
                 case TelephonyManager.CALL_STATE_IDLE:
-                    removeFxView();
-                    removeAnswerView();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            removeFxView();
+                            removeAnswerView();
+                        }
+                    }, 1600);
                     PHONE_STATE = "IDLE";
                     isAnswer = false;
                     break;
