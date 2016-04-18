@@ -326,6 +326,8 @@ public class FxService extends AccessibilityService implements View.OnClickListe
 //                    removeFxView();
                     break;
                 case TelephonyManager.CALL_STATE_RINGING:
+                    removeAnswerView();
+                    removeFxView();
                     //查询该号码对应的名字
                     numbername = queryNumberName(incomingNumber);
                     PHONE_STATE = "RINGING";

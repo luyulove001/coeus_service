@@ -100,11 +100,6 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver implements
         if (its != null && event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
             if (audioManager.isWiredHeadsetOn() || audioManager.isBluetoothScoOn() || its[0] == 0.0) {
                 audioManager.setSpeakerphoneOn(false);
-//                if (MainActivity.lockLayer != null && MainActivity.activity != null) {
-//                    MainActivity.lockLayer.unlock();
-//                    MainActivity.activity.finish();
-//                }s
-//                FxService.removeAnswerView();
                 FxService.interrupt(450);
                 FxService.interrupt(600);
                 firstSensor = 1;
@@ -114,12 +109,6 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver implements
                 FxService.interrupt(200);
                 Log.d("myTag", "1111");
             }
-                                                            /*if(firstSensor==1){
-                                                                                audioManager.setSpeakerphoneOn(true);
-                                                            }else{
-                                                                                audioManager.setSpeakerphoneOn(false);
-                                                                                firstSensor = 1;
-                                                            }*/
         }
 
     }
