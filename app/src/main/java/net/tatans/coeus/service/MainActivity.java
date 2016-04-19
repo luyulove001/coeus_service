@@ -3,34 +3,19 @@ package net.tatans.coeus.service;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.ContactsContract;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.GestureDetector;
-import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
-import android.view.accessibility.AccessibilityManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import net.tatans.coeus.network.speaker.Speaker;
-import net.tatans.coeus.network.tools.TatansApplication;
-import net.tatans.coeus.network.tools.TatansLog;
-import net.tatans.coeus.network.tools.TatansToast;
 import net.tatans.coeus.util.LockLayer;
 import net.tatans.coeus.util.PhoneUtil;
 
@@ -60,9 +45,9 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         tv_main_number = (TextView) lock.findViewById(R.id.tv_main_number);
         tv_main_end = (TextView) lock.findViewById(R.id.tv_main_end);
         tv_main_more = (TextView) lock.findViewById(R.id.tv_main_more);
-        tv_main_number.setText(queryNumberName(getIntent().getStringExtra("EXTRA_PHONE_NUMBER")));
+        tv_main_number.setText(queryNameByNum(getIntent().getStringExtra("EXTRA_PHONE_NUMBER"), MainActivity.this));
         lyt_full = (LinearLayout) lock.findViewById(R.id.lyt_full);
-        lyt_full.setContentDescription(queryNumberName(getIntent().getStringExtra("EXTRA_PHONE_NUMBER")));
+        lyt_full.setContentDescription(queryNameByNum(getIntent().getStringExtra("EXTRA_PHONE_NUMBER"), MainActivity.this));
         tv_main_end.setText("挂断");
         tv_main_end.setContentDescription("挂断。按钮");
         tv_main_end.setOnClickListener(this);
@@ -126,6 +111,25 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         return incomingNumber;
     }
 
+    public static String queryNameByNum(String num, Context context) {
+        Cursor cursorOriginal =
+                context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        new String[]{ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME},
+                        ContactsContract.CommonDataKinds.Phone.NUMBER + "='" + num + "'", null, null);
+        if (null != cursorOriginal) {
+            if (cursorOriginal.getCount() > 1) {
+                return null;
+            } else {
+                if (cursorOriginal.moveToFirst()) {
+                    return cursorOriginal.getString(cursorOriginal.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                } else {
+                    return null;
+                }
+            }
+        } else {
+            return null;
+        }
+    }
 
     /**
      * 手势控制暂停播放
