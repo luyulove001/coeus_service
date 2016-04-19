@@ -45,9 +45,9 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         tv_main_number = (TextView) lock.findViewById(R.id.tv_main_number);
         tv_main_end = (TextView) lock.findViewById(R.id.tv_main_end);
         tv_main_more = (TextView) lock.findViewById(R.id.tv_main_more);
-        tv_main_number.setText(queryNameByNum(getIntent().getStringExtra("EXTRA_PHONE_NUMBER"), MainActivity.this));
+        tv_main_number.setText(queryNumberName(getIntent().getStringExtra("EXTRA_PHONE_NUMBER")));
         lyt_full = (LinearLayout) lock.findViewById(R.id.lyt_full);
-        lyt_full.setContentDescription(queryNameByNum(getIntent().getStringExtra("EXTRA_PHONE_NUMBER"), MainActivity.this));
+        lyt_full.setContentDescription(queryNumberName(getIntent().getStringExtra("EXTRA_PHONE_NUMBER")));
         tv_main_end.setText("挂断");
         tv_main_end.setContentDescription("挂断。按钮");
         tv_main_end.setOnClickListener(this);
@@ -88,27 +88,30 @@ public class MainActivity extends Activity implements View.OnClickListener, View
      *
      */
     public String queryNumberName(String incomingNumber) {
-        String[] projection = { ContactsContract.PhoneLookup.DISPLAY_NAME,
-                ContactsContract.PhoneLookup.NUMBER };
-        Uri uri = Uri.withAppendedPath(
-                ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
-                Uri.encode(incomingNumber));
-        ContentResolver resolver = getContentResolver();
-        Cursor cursor = resolver.query(uri,
-                projection,
-                null,
-                null,
-                null);
-        while (cursor.moveToNext()) {
-            String phoneName = cursor.getString(cursor
-                    .getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));// 缓存的名称与电话号码，如果它的存在
-            if (TextUtils.isEmpty(phoneName))
-                continue;
-            return phoneName;
+        try {
+            String[] projection = {ContactsContract.PhoneLookup.DISPLAY_NAME,
+                    ContactsContract.PhoneLookup.NUMBER};
+            Uri uri = Uri.withAppendedPath(
+                    ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+                    Uri.encode(incomingNumber));
+            ContentResolver resolver = getContentResolver();
+            Cursor cursor = resolver.query(uri,
+                    projection,
+                    null,
+                    null,
+                    null);
+            while (cursor.moveToNext()) {
+                String phoneName = cursor.getString(cursor
+                        .getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));// 缓存的名称与电话号码，如果它的存在
+                if (TextUtils.isEmpty(phoneName))
+                    continue;
+                return phoneName;
+            }
+            cursor.close();
+            return incomingNumber;
+        } catch (Exception e) {
+            return incomingNumber;
         }
-        cursor.close();
-
-        return incomingNumber;
     }
 
     public static String queryNameByNum(String num, Context context) {
@@ -127,7 +130,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
                 }
             }
         } else {
-            return null;
+            return num;
         }
     }
 
