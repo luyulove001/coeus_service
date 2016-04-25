@@ -17,7 +17,6 @@ import net.tatans.coeus.network.tools.TatansApplication;
 import net.tatans.coeus.service.FxService;
 import net.tatans.coeus.service.InCallAccessibilityService;
 import net.tatans.coeus.service.MainActivity;
-import net.tatans.coeus.util.PhoneUtil;
 
 /**
  * Created by John on 2016/1/5.

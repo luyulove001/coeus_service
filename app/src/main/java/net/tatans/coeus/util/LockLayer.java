@@ -30,7 +30,7 @@ public class LockLayer {
 		isLocked = false;
 		mWindowManager = (WindowManager) mContext.getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
 		wmParams = new LayoutParams();
-		wmParams.type = LayoutParams.TYPE_SYSTEM_ERROR;//�ؼ�����
+		wmParams.type = LayoutParams.TYPE_SYSTEM_ALERT;//�ؼ�����
 		wmParams.format = PixelFormat.RGBA_8888;
 		// ����Window flag
 //		wmParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;

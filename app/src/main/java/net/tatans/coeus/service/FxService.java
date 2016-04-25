@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.PixelFormat;
 import android.net.Uri;
@@ -86,6 +87,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         //设置悬浮窗口长宽数据
         wmParams.width = LayoutParams.MATCH_PARENT;
         wmParams.height = LayoutParams.MATCH_PARENT;
+        wmParams.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         LayoutInflater inflater = LayoutInflater.from(getApplication());
         //获取浮动窗口视图所在布局
         mFloatLayout = (LinearLayout) inflater.inflate(id, null);
@@ -98,7 +100,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     }
 
     /**
-     * 创建数字键盘悬浮窗界面
+     * 接听界面
      */
     private void createView() {
         removeFxView();
@@ -113,6 +115,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         //设置悬浮窗口长宽数据
         wmParams.width = LayoutParams.MATCH_PARENT;
         wmParams.height = LayoutParams.MATCH_PARENT;
+        wmParams.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         LayoutInflater inflater = LayoutInflater.from(getApplication());
         //获取浮动窗口视图所在布局
         mAnswerLayout = (LinearLayout) inflater.inflate(R.layout.activity_main, null);
@@ -324,6 +327,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                 case TelephonyManager.CALL_STATE_OFFHOOK:
                     PHONE_STATE = "OFFHOOK";
 //                    removeFxView();
+                    mSpeaker.stopAllSound();
                     break;
                 case TelephonyManager.CALL_STATE_RINGING:
                     removeAnswerView();
@@ -344,6 +348,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                             removeAnswerView();
                         }
                     }, 1600);
+                    mSpeaker.stopAllSound();
                     PHONE_STATE = "IDLE";
                     isAnswer = false;
                     break;
