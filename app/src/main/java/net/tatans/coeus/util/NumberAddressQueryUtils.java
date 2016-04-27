@@ -16,7 +16,7 @@ public class NumberAddressQueryUtils {
     public static String queryNumber(String number) {
         String path = Application.getContext().getFilesDir()
                 .getAbsolutePath()+ "address.db";   //data/data目录
-        String address = number;
+        String address = "";
         SQLiteDatabase database = SQLiteDatabase.openDatabase(path, null,
                 SQLiteDatabase.OPEN_READONLY);
         // 手机号码 13 14 15 16 18
@@ -43,7 +43,7 @@ public class NumberAddressQueryUtils {
             switch (number.length()) {
                 case 3:
                     // 110
-                    address = "";
+                    address = "亲情网";
                     break;
                 case 4:
                     // 5554
@@ -52,6 +52,9 @@ public class NumberAddressQueryUtils {
                 case 5:
                     // 10086
                     address = "客服电话";
+                    break;
+                case 6:
+                    address = "集团短号";
                     break;
                 case 7:
                     //

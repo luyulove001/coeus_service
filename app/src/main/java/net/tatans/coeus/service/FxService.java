@@ -391,7 +391,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         }
         cursor.close();
 
-        return incomingNumber  + "    " + city;
+        return incomingNumber  + "\n" + city;
     }
 
     /**
