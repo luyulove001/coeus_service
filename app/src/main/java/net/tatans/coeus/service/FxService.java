@@ -32,8 +32,13 @@ import android.widget.TextView;
 import net.tatans.coeus.network.speaker.Speaker;
 import net.tatans.coeus.network.tools.TatansApplication;
 import net.tatans.coeus.network.tools.TatansToast;
+import net.tatans.coeus.util.NumberAddressQueryUtils;
 import net.tatans.coeus.util.PhoneUtil;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class FxService extends AccessibilityService implements View.OnClickListener, OnTouchListener {
@@ -68,6 +73,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         wmParams = new LayoutParams();
         mWindowManager = (WindowManager) getApplication().getSystemService(getApplication().WINDOW_SERVICE);
         mDetector = new GestureDetector(this, new mOnGestureListener());
+        copyDB();
     }
 
     /**
@@ -363,6 +369,8 @@ public class FxService extends AccessibilityService implements View.OnClickListe
      */
     public String queryNumberName(String incomingNumber) {
 //        Uri uri = Uri.parse("content://com.android.contacts/data/phones/filter/" + incomingNumber);
+//        String city = PhoneUtil.mobileNumber(incomingNumber);
+        String city = NumberAddressQueryUtils.queryNumber(incomingNumber);
         String[] projection = { ContactsContract.PhoneLookup.DISPLAY_NAME,
                 ContactsContract.PhoneLookup.NUMBER };
         Uri uri = Uri.withAppendedPath(
@@ -383,7 +391,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         }
         cursor.close();
 
-        return incomingNumber;
+        return incomingNumber  + "    " + city;
     }
 
     /**
@@ -401,6 +409,29 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                 endCall();
             }
             return false;
+        }
+    }
+
+    private void copyDB() {
+        try {
+            String path = getApplicationContext().getFilesDir()
+                    .getAbsolutePath()+ "address.db";   //data/data目录
+            File file = new File(path);
+            if (file.exists() && file.length() > 0) {
+            } else {
+                InputStream is = getAssets().open("address.db");
+                FileOutputStream fos = new FileOutputStream(file);
+                byte[] buffer = new byte[1024];
+                int len = 0;
+                while ((len = is.read(buffer)) != -1) {
+                    fos.write(buffer, 0, len);
+                }
+                is.close();
+                fos.close();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
