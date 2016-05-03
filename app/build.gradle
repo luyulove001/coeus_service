@@ -25,10 +25,14 @@ android {
 
     signingConfigs {
         releaseConfig {
-            keyAlias 'hyperion'
+            keyPassword HYPERION_KEY_PASSWORD
+            keyAlias HYPERION_KEY_ALIAS
+            storePassword HYPERION_STORE_PASSWORD
+            storeFile file(HYPERION_STORE_FILE)
+         /*   keyAlias 'hyperion'
             keyPassword 'M*u!YTZp'
             storeFile file('/root/.jenkins/hyperion-sign')
-            storePassword '$Fv0h)wY($zL%iX8'
+            storePassword '$Fv0h)wY($zL%iX8'*/
         }
 
     }
@@ -59,7 +63,7 @@ android {
 
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            signingConfig signingConfigs.releaseConfig
+            signingConfig signingConfigs.releaseConfig
             applicationVariants.all { variant ->
                 def file = variant.outputs[0].outputFile
                 def f_parent = file.parent
