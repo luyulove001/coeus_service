@@ -173,7 +173,6 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         switch (eventType) {
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
                 eventText = "TYPE_WINDOW_STATE_CHANGED";
-                System.out.println(PHONE_STATE);
                 if ("OFFHOOK".equals(PHONE_STATE) && mFloatLayout == null) {
 //                    createFloatView(R.layout.float_layout);
                 } else if ("RINGING".equals(PHONE_STATE) && mFloatLayout == null && !isAnswer) {
@@ -260,32 +259,6 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private void clickByID() {
-        AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
-        if (nodeInfo == null) {
-            System.out.println("rootWindow为空");
-            return;
-        }
-        List<AccessibilityNodeInfo> nodeInfoList = nodeInfo.findAccessibilityNodeInfosByViewId("com.android.incallui:id/name");
-        name = getNodeInfoText(nodeInfoList);
-        nodeInfoList = nodeInfo.findAccessibilityNodeInfosByViewId("com.android.incallui:id/phoneNumber");
-        phoneNumber = getNodeInfoText(nodeInfoList);
-        nodeInfoList = nodeInfo.findAccessibilityNodeInfosByViewId("com.android.incallui:id/callCardTelocation");
-        callCardTelocation = getNodeInfoText(nodeInfoList);
-        Log.e(TAG, name + " -- " + phoneNumber + " -- " + callCardTelocation);
-    }
-
-    private String getNodeInfoText(List<AccessibilityNodeInfo> list) {
-        String name = "";
-        if (list.size() == 0) System.out.print("ID找不到");
-        for (AccessibilityNodeInfo n : list) {
-//            n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-            name = n.getText().toString();
-            Log.e(TAG, name);
-        }
-        return name;
     }
 
     @Override
@@ -395,8 +368,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     }
 
     /**
-     * 手势控制暂停播放
-     * @author SiLiPing
+     * 手势控制接听挂断
      */
     private class mOnGestureListener extends GestureDetector.SimpleOnGestureListener {
 
