@@ -38,6 +38,7 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver implements
                     Intent i = new Intent(TatansApplication.getContext(), MainActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     i.putExtra("EXTRA_PHONE_NUMBER", EXTRA_PHONE_NUMBER);
+                    if (!FxService.isDestroy)
                     TatansApplication.getContext().startActivity(i);
                 }
             },200);

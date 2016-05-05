@@ -25,11 +25,9 @@ import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
-import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import net.tatans.coeus.network.speaker.Speaker;
 import net.tatans.coeus.network.tools.TatansApplication;
 import net.tatans.coeus.network.tools.TatansToast;
 import net.tatans.coeus.util.NumberAddressQueryUtils;
@@ -39,7 +37,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 public class FxService extends AccessibilityService implements View.OnClickListener, OnTouchListener {
 
@@ -55,11 +52,9 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     private static final String TAG = "FxService";
     private static String PHONE_STATE = "IDLE";
     private boolean isAnswer = false;
-    private String name, callCardTelocation, phoneNumber;
     private TelephonyManager telephonyManager;
     private TextView tv_number;
-    private Speaker mSpeaker;
-    private Handler handler = new Handler();
+    public static boolean isDestroy;
 
     @Override
     public void onCreate() {
@@ -69,11 +64,11 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                 .getSystemService(Context.TELEPHONY_SERVICE);
         telephonyManager.listen(new MyPhoneLinstener(),
                 PhoneStateListener.LISTEN_CALL_STATE);
-        mSpeaker = Speaker.getInstance(this);
         wmParams = new LayoutParams();
         mWindowManager = (WindowManager) getApplication().getSystemService(getApplication().WINDOW_SERVICE);
         mDetector = new GestureDetector(this, new mOnGestureListener());
         copyDB();
+        isDestroy = false;
     }
 
     /**
@@ -269,6 +264,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     @Override
     public void onDestroy() {
         telephonyManager.listen(null, PhoneStateListener.LISTEN_CALL_STATE);
+        isDestroy = true;
         super.onDestroy();
     }
 
@@ -302,11 +298,12 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         public void onCallStateChanged(int state, String incomingNumber) {
             super.onCallStateChanged(state, incomingNumber);
             Log.i(TAG, incomingNumber);
+            if (isDestroy) return;
             switch (state) {
                 case TelephonyManager.CALL_STATE_OFFHOOK:
                     PHONE_STATE = "OFFHOOK";
 //                    removeFxView();
-                    mSpeaker.stopAllSound();
+                    Application.stopAllSound();
                     break;
                 case TelephonyManager.CALL_STATE_RINGING:
                     removeAnswerView();
@@ -316,7 +313,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                     PHONE_STATE = "RINGING";
                     createFloatView(R.layout.kb_answer);
                     tv_number.setText(numbername);
-                    mSpeaker.speech("来电:" + numbername + "。来电:" + numbername);
+                    Application.speech("来电:" + numbername + "。来电:" + numbername);
                     Log.e("antony", "speech");
                     break;
                 case TelephonyManager.CALL_STATE_IDLE:
@@ -327,7 +324,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                             removeAnswerView();
                         }
                     }, 1600);
-                    mSpeaker.stopAllSound();
+                    Application.stopAllSound();
                     PHONE_STATE = "IDLE";
                     isAnswer = false;
                     break;
