@@ -1,0 +1,40 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/viewObj"
+    android:orientation="vertical"
+    android:background="#000000"
+    tools:context=".HelloActivity" >
+
+    <LinearLayout
+        android:id="@+id/out"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:layout_weight="1">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:drawableLeft="@mipmap/danger"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:textSize="25sp"
+            android:gravity="center|left"
+            android:text="@string/easy_setting"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/in"
+        android:text="继续进入"
+        android:textSize="25sp"
+        android:textColor="#ffffff"
+        android:gravity="center"
+        android:background="#242424"
+        android:layout_width="match_parent"
+        android:layout_height="60dp" />
+</LinearLayout>
