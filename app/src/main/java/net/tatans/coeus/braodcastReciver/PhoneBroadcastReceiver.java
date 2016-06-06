@@ -98,16 +98,19 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver implements
     public void onSensorChanged(SensorEvent event) {
         float[] its = event.values;
         if (its != null && event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
+            //靠近手机，设置扬声器外放false
             if (audioManager.isWiredHeadsetOn() || audioManager.isBluetoothScoOn() || its[0] == 0.0) {
                 audioManager.setSpeakerphoneOn(false);
                 FxService.interrupt(450);
                 FxService.interrupt(600);
                 firstSensor = 1;
-                Log.d("myTag", "222222");
             } else if (firstSensor == 1) {
+                //离开手机，设置扬声器外方true
                 audioManager.setSpeakerphoneOn(true);
                 FxService.interrupt(200);
-                Log.d("myTag", "1111");
+            }else{
+                //默认听筒
+                audioManager.setSpeakerphoneOn(false);
             }
         }
 
