@@ -19,8 +19,11 @@ import net.tatans.coeus.service.InCallAccessibilityService;
 import net.tatans.coeus.service.MainActivity;
 
 /**
- * Created by John on 2016/1/5.
- */
+  * ClassName :PhoneBroadcastReceiver
+  * explain :监听电话
+  * @author: syf
+  * Created time : 2016/6/7 13:25.
+  */
 public class PhoneBroadcastReceiver extends BroadcastReceiver implements
         SensorEventListener {
 
