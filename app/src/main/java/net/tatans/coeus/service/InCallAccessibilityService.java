@@ -15,8 +15,11 @@ import java.util.List;
 
 
 /**
- * Created by John on 2016/1/5.
- */
+  * ClassName :InCallAccessibilityService
+  * explain :拨号盘自动打开处理
+  * @author: syf
+  * Created time : 2016/6/7 14:44.
+  */
 public class InCallAccessibilityService extends AccessibilityService {
     public static Boolean flag = false;
     public static Boolean closed = true;
@@ -54,7 +57,13 @@ public class InCallAccessibilityService extends AccessibilityService {
         this.processAccessibilityEnvent(event);
 
     }
-
+ /**
+   * Purpose:分发检测到的事件
+   * explain:
+   * @param event
+   * @author: syf
+   * Created time : 2016/6/7 14:46.
+   */
     private void processAccessibilityEnvent(AccessibilityEvent event) {
 
         Log.d("test", event.eventTypeToString(event.getEventType()));
