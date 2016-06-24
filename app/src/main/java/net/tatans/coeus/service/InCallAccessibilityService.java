@@ -2,6 +2,7 @@ package net.tatans.coeus.service;
 
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,13 +10,17 @@ import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import net.tatans.coeus.network.tools.TatansLog;
+import net.tatans.coeus.service.activity.Demo1;
+import net.tatans.coeus.service.activity.Demo2;
+import net.tatans.coeus.service.tools.TatansService;
 import net.tatans.coeus.util.FloatView;
 
 import java.util.List;
 
 
 /**
-  * ClassName :InCallAccessibilityService
+  * ClassName :TatansAccessibilityService
   * explain :拨号盘自动打开处理
   * @author: syf
   * Created time : 2016/6/7 14:44.
@@ -23,7 +28,6 @@ import java.util.List;
 public class InCallAccessibilityService extends AccessibilityService {
     public static Boolean flag = false;
     public static Boolean closed = true;
-
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
@@ -41,7 +45,6 @@ public class InCallAccessibilityService extends AccessibilityService {
                 recycle(rowNode);
         }
 
-
         switch (event.getEventType()) {
             case AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED:
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
@@ -52,11 +55,9 @@ public class InCallAccessibilityService extends AccessibilityService {
                     easySettingApplication(getApplication(), getRootInActiveWindow());
                 }
         }
-
-
         this.processAccessibilityEnvent(event);
-
     }
+
  /**
    * Purpose:分发检测到的事件
    * explain:
@@ -77,7 +78,7 @@ public class InCallAccessibilityService extends AccessibilityService {
 
     @Override
     public void onInterrupt() {
-
+        TatansLog.e("----------");
     }
 
     @SuppressLint("InlinedApi")
@@ -140,6 +141,11 @@ public class InCallAccessibilityService extends AccessibilityService {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        return super.onUnbind(intent);
     }
 
     /**

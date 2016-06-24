@@ -3,7 +3,7 @@ package net.tatans.coeus.util;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import net.tatans.coeus.service.Application;
+import net.tatans.coeus.service.activity.TatansServiceApplication;
 
 public class NumberAddressQueryUtils {
 
@@ -14,7 +14,7 @@ public class NumberAddressQueryUtils {
      * @return
      */
     public static String queryNumber(String number) {
-        String path = Application.getContext().getFilesDir()
+        String path = TatansServiceApplication.getContext().getFilesDir()
                 .getAbsolutePath()+ "address.db";   //data/data目录
         String address = "";
         SQLiteDatabase database = SQLiteDatabase.openDatabase(path, null,

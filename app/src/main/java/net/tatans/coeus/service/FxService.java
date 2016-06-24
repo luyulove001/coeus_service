@@ -30,6 +30,7 @@ import android.widget.TextView;
 
 import net.tatans.coeus.network.tools.TatansApplication;
 import net.tatans.coeus.network.tools.TatansToast;
+import net.tatans.coeus.service.activity.TatansServiceApplication;
 import net.tatans.coeus.util.NumberAddressQueryUtils;
 import net.tatans.coeus.util.PhoneUtil;
 
@@ -303,7 +304,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                 case TelephonyManager.CALL_STATE_OFFHOOK:
                     PHONE_STATE = "OFFHOOK";
 //                    removeFxView();
-                    Application.stopAllSound();
+                    TatansServiceApplication.stopAllSound();
                     break;
                 case TelephonyManager.CALL_STATE_RINGING:
                     removeAnswerView();
@@ -313,7 +314,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                     PHONE_STATE = "RINGING";
                     createFloatView(R.layout.kb_answer);
                     tv_number.setText(numbername);
-                    Application.speech("来电:" + numbername + "。来电:" + numbername);
+                    TatansServiceApplication.speech("来电:" + numbername + "。来电:" + numbername);
                     Log.e("antony", "speech");
                     break;
                 case TelephonyManager.CALL_STATE_IDLE:
@@ -324,7 +325,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                             removeAnswerView();
                         }
                     }, 1600);
-                    Application.stopAllSound();
+                    TatansServiceApplication.stopAllSound();
                     PHONE_STATE = "IDLE";
                     isAnswer = false;
                     break;

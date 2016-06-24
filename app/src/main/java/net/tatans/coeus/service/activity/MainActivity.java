@@ -1,4 +1,4 @@
-package net.tatans.coeus.service;
+package net.tatans.coeus.service.activity;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import net.tatans.coeus.service.R;
 import net.tatans.coeus.util.LockLayer;
 import net.tatans.coeus.util.PhoneUtil;
 

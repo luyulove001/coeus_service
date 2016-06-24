@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 定义水质监测的目标对象
+ * Created by Yuriy on 2016/6/24.
  */
 public abstract class AccessibilityServiceSubject {
 	/**
@@ -28,6 +28,9 @@ public abstract class AccessibilityServiceSubject {
 	 */
 	public void detach(TatansServiceImp observer) {
 		observers.remove(observer);
+	}
+	public void clear() {
+		observers.clear();
 	}
 	/**
 	 * 通知相应的观察者对象

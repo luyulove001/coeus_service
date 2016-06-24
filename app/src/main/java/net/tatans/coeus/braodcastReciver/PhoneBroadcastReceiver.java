@@ -16,7 +16,8 @@ import android.util.Log;
 import net.tatans.coeus.network.tools.TatansApplication;
 import net.tatans.coeus.service.FxService;
 import net.tatans.coeus.service.InCallAccessibilityService;
-import net.tatans.coeus.service.MainActivity;
+import net.tatans.coeus.service.TatansAccessibilityService;
+import net.tatans.coeus.service.activity.MainActivity;
 
 /**
   * ClassName :PhoneBroadcastReceiver
