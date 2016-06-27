@@ -3,24 +3,13 @@ package net.tatans.coeus.service;
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import net.tatans.coeus.network.tools.TatansLog;
 import net.tatans.coeus.service.activity.EasySettingControl;
 import net.tatans.coeus.service.activity.TatansServiceApplication;
 import net.tatans.coeus.service.activity.WeChatController;
 import net.tatans.coeus.service.tools.TatansService;
-import net.tatans.coeus.service.activity.Demo1;
-import net.tatans.coeus.service.activity.Demo2;
-import net.tatans.coeus.util.FloatView;
-
-import java.util.List;
 
 
 /**
@@ -34,8 +23,6 @@ public class TatansAccessibilityService extends AccessibilityService {
     protected void onServiceConnected() {
         super.onServiceConnected();
         tatansService = new TatansService();
-        tatansService.attach(new Demo1());
-        tatansService.attach(new Demo2());
         tatansService.attach(new EasySettingControl());
         tatansService.attach(new WeChatController());
         tatansService.notifyInit();
