@@ -1,19 +1,12 @@
 package net.tatans.coeus.service;
 
 import android.accessibilityservice.AccessibilityService;
-import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.PixelFormat;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.provider.ContactsContract;
@@ -32,39 +25,36 @@ import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
-import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import net.tatans.coeus.network.speaker.Speaker;
 import net.tatans.coeus.network.tools.TatansApplication;
-import net.tatans.coeus.network.tools.TatansLog;
 import net.tatans.coeus.network.tools.TatansToast;
+import net.tatans.coeus.util.NumberAddressQueryUtils;
 import net.tatans.coeus.util.PhoneUtil;
 
-import java.util.List;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class FxService extends AccessibilityService implements View.OnClickListener, OnTouchListener {
 
     //定义浮动窗口布局
-    private LinearLayout mFloatLayout, mAnswerLayout;
+    private static LinearLayout mFloatLayout, mAnswerLayout;
     private LinearLayout lyt_full;
     private LayoutParams wmParams;
     //创建浮动窗口设置布局参数的对象
-    private WindowManager mWindowManager;
+    private static WindowManager mWindowManager;
     private LinearLayout btn_endCall, btn_answer;
-    private TextView tv_main_number, tv_main_end;
+    private TextView tv_main_number, tv_main_end, tv_main_more;
     private String numbername;
     private static final String TAG = "FxService";
     private static String PHONE_STATE = "IDLE";
     private boolean isAnswer = false;
-    private String name, callCardTelocation, phoneNumber;
     private TelephonyManager telephonyManager;
     private TextView tv_number;
-    private Speaker mSpeaker;
-    private Handler handler = new Handler();
-    private boolean isCalling;
-    PhoneBroadcastReceiver pbReceiver;
+    public static boolean isDestroy;
 
     @Override
     public void onCreate() {
@@ -74,25 +64,35 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                 .getSystemService(Context.TELEPHONY_SERVICE);
         telephonyManager.listen(new MyPhoneLinstener(),
                 PhoneStateListener.LISTEN_CALL_STATE);
-        mSpeaker = Speaker.getInstance(this);
         wmParams = new LayoutParams();
         mWindowManager = (WindowManager) getApplication().getSystemService(getApplication().WINDOW_SERVICE);
         mDetector = new GestureDetector(this, new mOnGestureListener());
-        pbReceiver = new PhoneBroadcastReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
-        filter.addAction("android.intent.action.PHONE_STATE");
-        registerReceiver(pbReceiver, filter);
+        copyDB();
+        isDestroy = false;
     }
 
     /**
      * 创建数字键盘悬浮窗界面
      */
-    private void createFloatView(int id, LayoutParams wmParams) {
+    private void createFloatView(int id) {
+        interrupt();
         removeFxView();
+        //设置window type
+        wmParams.type = LayoutParams.TYPE_PHONE;
+        //设置图片格式，效果为背景透明
+        wmParams.format = PixelFormat.RGBA_8888;
+        //设置浮动窗口不可聚焦（实现操作除浮动窗口外的其他可见窗口的操作）
+        wmParams.flags = LayoutParams.FLAG_ALT_FOCUSABLE_IM;
+        //调整悬浮窗显示的停靠位置为左侧置顶
+        wmParams.gravity = Gravity.LEFT | Gravity.TOP;
+        //设置悬浮窗口长宽数据
+        wmParams.width = LayoutParams.MATCH_PARENT;
+        wmParams.height = LayoutParams.MATCH_PARENT;
+        wmParams.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         LayoutInflater inflater = LayoutInflater.from(getApplication());
         //获取浮动窗口视图所在布局
         mFloatLayout = (LinearLayout) inflater.inflate(id, null);
+        mFloatLayout.setContentDescription("。");
         //添加mFloatLayout
         mWindowManager.addView(mFloatLayout, wmParams);
         initKbView();
@@ -101,51 +101,48 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     }
 
     /**
-     * 创建数字键盘悬浮窗界面
+     * 接听界面
      */
-    public void createView(LayoutParams wmParams) {
+    private void createView() {
         removeFxView();
+        //设置window type
+        wmParams.type = LayoutParams.TYPE_SYSTEM_ERROR;
+        //设置图片格式，效果为背景透明
+        wmParams.format = PixelFormat.RGBA_8888;
+        //设置浮动窗口不可聚焦（实现操作除浮动窗口外的其他可见窗口的操作）
+        wmParams.flags = LayoutParams.FLAG_ALT_FOCUSABLE_IM;
+        //调整悬浮窗显示的停靠位置为左侧置顶
+        wmParams.gravity = Gravity.LEFT | Gravity.TOP;
+        //设置悬浮窗口长宽数据
+        wmParams.width = LayoutParams.MATCH_PARENT;
+        wmParams.height = LayoutParams.MATCH_PARENT;
+        wmParams.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         LayoutInflater inflater = LayoutInflater.from(getApplication());
         //获取浮动窗口视图所在布局
         mAnswerLayout = (LinearLayout) inflater.inflate(R.layout.activity_main, null);
         tv_main_number = (TextView) mAnswerLayout.findViewById(R.id.tv_main_number);
         tv_main_end = (TextView) mAnswerLayout.findViewById(R.id.tv_main_end);
-        if (numbername != null || !"".equals(numbername))
+        tv_main_more = (TextView) mAnswerLayout.findViewById(R.id.tv_main_more);
+        lyt_full = (LinearLayout) mAnswerLayout.findViewById(R.id.lyt_full);
+        tv_main_more.setText("更多");
+        tv_main_more.setContentDescription("更多。按钮");
+        if (numbername != null || !"".equals(numbername)) {
             tv_main_number.setText(queryNumberName(numbername));
+            lyt_full.setContentDescription(numbername);
+        }
         tv_main_end.setText("挂断");
         tv_main_end.setContentDescription("挂断。按钮");
         tv_main_end.setOnClickListener(this);
+        tv_main_more.setOnClickListener(this);
         lyt_full = (LinearLayout) mAnswerLayout.findViewById(R.id.lyt_full);
         lyt_full.setOnTouchListener(this);
         tv_main_number.setOnTouchListener(this);
         tv_main_end.setOnTouchListener(this);
+        tv_main_more.setOnTouchListener(this);
         //添加mFloatLayout
         mWindowManager.addView(mAnswerLayout, wmParams);
         mAnswerLayout.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-    }
-
-    /**
-     * 设置windowsManager属性， 参数为WindowsManager.LayoutParams中的属性
-     *
-     * @param type   LayoutParams.TYPE_
-     * @param flags  LayoutParams.FLAG_
-     * @param width
-     * @param height
-     */
-    public LayoutParams initParams(int type, int flags, int width, int height) {
-        //设置window type
-        wmParams.type = type;
-        //设置图片格式，效果为背景透明
-        wmParams.format = PixelFormat.RGBA_8888;
-        //设置浮动窗口不可聚焦（实现操作除浮动窗口外的其他可见窗口的操作）
-        wmParams.flags = flags;
-        //调整悬浮窗显示的停靠位置为左侧置顶
-        wmParams.gravity = Gravity.LEFT | Gravity.TOP;
-        //设置悬浮窗口长宽数据
-        wmParams.width = width;
-        wmParams.height = height;
-        return wmParams;
     }
 
     private GestureDetector mDetector;//屏幕监控
@@ -171,7 +168,6 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         switch (eventType) {
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
                 eventText = "TYPE_WINDOW_STATE_CHANGED";
-                System.out.println(PHONE_STATE);
                 if ("OFFHOOK".equals(PHONE_STATE) && mFloatLayout == null) {
 //                    createFloatView(R.layout.float_layout);
                 } else if ("RINGING".equals(PHONE_STATE) && mFloatLayout == null && !isAnswer) {
@@ -192,17 +188,29 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_endCall:
-                removeFxView();
-                PhoneUtil.endCall(FxService.this);
+                endCall();
                 break;
             case R.id.btn_answer:
                 answerCall();
                 break;
             case R.id.tv_main_end:
-                removeFxView();
-                PhoneUtil.endCall(FxService.this);
+                endCall();
+                break;
+            case R.id.tv_main_more:
+                removeAnswerView();
                 break;
         }
+    }
+
+    private void endCall() {
+        PhoneUtil.endCall(FxService.this);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                removeFxView();
+                removeAnswerView();
+            }
+        }, 500);
     }
 
     public  void answerCall() {
@@ -217,8 +225,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
             mediaButtonIntent.putExtra(Intent.EXTRA_KEY_EVENT, keyEvent);
             sendOrderedBroadcast(mediaButtonIntent, null);
         }
-        createView(initParams(LayoutParams.TYPE_SYSTEM_ERROR, LayoutParams.FLAG_ALT_FOCUSABLE_IM,
-                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+        createView();
         isAnswer = true;
         interrupt(500);
     }
@@ -241,38 +248,12 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                     AccessibilityManager accessibilityManager = (AccessibilityManager) TatansApplication.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
                     accessibilityManager.interrupt();
                     TatansToast.cancel();
-                    TatansLog.e("打断");
+                    Log.e("antony", "打断");
                 }
             }, score);
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private void clickByID() {
-        AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
-        if (nodeInfo == null) {
-            System.out.println("rootWindow为空");
-            return;
-        }
-        List<AccessibilityNodeInfo> nodeInfoList = nodeInfo.findAccessibilityNodeInfosByViewId("com.android.incallui:id/name");
-        name = getNodeInfoText(nodeInfoList);
-        nodeInfoList = nodeInfo.findAccessibilityNodeInfosByViewId("com.android.incallui:id/phoneNumber");
-        phoneNumber = getNodeInfoText(nodeInfoList);
-        nodeInfoList = nodeInfo.findAccessibilityNodeInfosByViewId("com.android.incallui:id/callCardTelocation");
-        callCardTelocation = getNodeInfoText(nodeInfoList);
-        TatansLog.e(name + " -- " + phoneNumber + " -- " + callCardTelocation);
-    }
-
-    private String getNodeInfoText(List<AccessibilityNodeInfo> list) {
-        String name = "";
-        if (list.size() == 0) System.out.print("ID找不到");
-        for (AccessibilityNodeInfo n : list) {
-//            n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-            name = n.getText().toString();
-            TatansLog.e(name);
-        }
-        return name;
     }
 
     @Override
@@ -283,29 +264,25 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     @Override
     public void onDestroy() {
         telephonyManager.listen(null, PhoneStateListener.LISTEN_CALL_STATE);
-        unregisterReceiver(pbReceiver);
+        isDestroy = true;
         super.onDestroy();
     }
 
     /**
      * 移除悬浮窗口
      */
-    public void removeFxView() {
+    public static void removeFxView() {
         if (mFloatLayout != null) {
             //移除悬浮窗口
             mWindowManager.removeView(mFloatLayout);
             mFloatLayout = null;
-        } else {
-            TatansLog.d("mFloatLayout为空");
         }
     }
 
-    public void removeAnswerView(){
+    public static void removeAnswerView(){
         if (mAnswerLayout != null){
             mWindowManager.removeView(mAnswerLayout);
             mAnswerLayout = null;
-        } else {
-            TatansLog.d("mAnswerLayout为空");
         }
     }
 
@@ -320,33 +297,34 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         @Override
         public void onCallStateChanged(int state, String incomingNumber) {
             super.onCallStateChanged(state, incomingNumber);
-            TatansLog.i(incomingNumber);
+            Log.i(TAG, incomingNumber);
+            if (isDestroy) return;
             switch (state) {
                 case TelephonyManager.CALL_STATE_OFFHOOK:
                     PHONE_STATE = "OFFHOOK";
 //                    removeFxView();
+                    Application.stopAllSound();
                     break;
                 case TelephonyManager.CALL_STATE_RINGING:
+                    removeAnswerView();
+                    removeFxView();
                     //查询该号码对应的名字
                     numbername = queryNumberName(incomingNumber);
                     PHONE_STATE = "RINGING";
-                    isCalling = true;
-                    createFloatView(R.layout.kb_answer, initParams(LayoutParams.TYPE_PHONE, LayoutParams.FLAG_ALT_FOCUSABLE_IM,
-                            LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+                    createFloatView(R.layout.kb_answer);
                     tv_number.setText(numbername);
-                    interrupt(100);
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mSpeaker.speech(numbername);
-                            TatansLog.e("speech");
-                        }
-                    }, 500);
+                    Application.speech("来电:" + numbername + "。来电:" + numbername);
+                    Log.e("antony", "speech");
                     break;
                 case TelephonyManager.CALL_STATE_IDLE:
-                    removeFxView();
-                    removeAnswerView();
-                    isCalling = false;
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            removeFxView();
+                            removeAnswerView();
+                        }
+                    }, 1600);
+                    Application.stopAllSound();
                     PHONE_STATE = "IDLE";
                     isAnswer = false;
                     break;
@@ -361,6 +339,8 @@ public class FxService extends AccessibilityService implements View.OnClickListe
      */
     public String queryNumberName(String incomingNumber) {
 //        Uri uri = Uri.parse("content://com.android.contacts/data/phones/filter/" + incomingNumber);
+//        String city = PhoneUtil.mobileNumber(incomingNumber);
+        String city = NumberAddressQueryUtils.queryNumber(incomingNumber);
         String[] projection = { ContactsContract.PhoneLookup.DISPLAY_NAME,
                 ContactsContract.PhoneLookup.NUMBER };
         Uri uri = Uri.withAppendedPath(
@@ -381,12 +361,11 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         }
         cursor.close();
 
-        return incomingNumber;
+        return incomingNumber  + "\n" + city;
     }
 
     /**
-     * 手势控制暂停播放
-     * @author SiLiPing
+     * 手势控制接听挂断
      */
     private class mOnGestureListener extends GestureDetector.SimpleOnGestureListener {
 
@@ -396,105 +375,32 @@ public class FxService extends AccessibilityService implements View.OnClickListe
             if (e1.getY() - e2.getY() > 120) {
                 answerCall();
             } else if (e2.getY() - e1.getY() > 120) {
-                removeFxView();
-                PhoneUtil.endCall(FxService.this);
+                endCall();
             }
             return false;
         }
     }
-    public class PhoneBroadcastReceiver extends BroadcastReceiver implements
-            SensorEventListener {
 
-        TelephonyManager tManager;
-        AudioManager audioManager;
-        SensorManager sensorManager;
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if ("android.intent.action.NEW_OUTGOING_CALL".equals(intent.getAction())) {
-                String EXTRA_PHONE_NUMBER = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
-                numbername = EXTRA_PHONE_NUMBER;
-                Intent i = new Intent(context, MainActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.putExtra("EXTRA_PHONE_NUMBER", EXTRA_PHONE_NUMBER);
-                isCalling = true;
-                context.startActivity(i);
+    private void copyDB() {
+        try {
+            String path = getApplicationContext().getFilesDir()
+                    .getAbsolutePath()+ "address.db";   //data/data目录
+            File file = new File(path);
+            if (file.exists() && file.length() > 0) {
             } else {
-                tManager = (TelephonyManager) context
-                        .getSystemService(Service.TELEPHONY_SERVICE);
-                audioManager = (AudioManager) context
-                        .getSystemService(Context.AUDIO_SERVICE);
-                sensorManager = (SensorManager) context
-                        .getSystemService(Context.SENSOR_SERVICE);
-                // 如果是来电
-                switch (tManager.getCallState()) {
-                    case TelephonyManager.CALL_STATE_RINGING:
-                        TatansLog.d("comming");
-                        InCallAccessibilityService.flag = false;
-                        break;
-
-                    // 通话过程
-                    case TelephonyManager.CALL_STATE_OFFHOOK:
-                        InCallAccessibilityService.flag = true;
-                        InCallAccessibilityService.closed = true;
-                        sensorManager.registerListener(this,
-                                sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY),
-                                SensorManager.SENSOR_DELAY_NORMAL);
-                        firstSensor = 0;
-                        TatansLog.d("online");
-                        break;
-
-                    // 挂断
-                    case TelephonyManager.CALL_STATE_IDLE:
-                        InCallAccessibilityService.flag = true;
-                        InCallAccessibilityService.closed = true;
-                        sensorManager.unregisterListener(this);
-                        TatansLog.d("hangup");
-                        if (MainActivity.lockLayer != null && MainActivity.activity != null) {
-                            MainActivity.lockLayer.unlock();
-                            MainActivity.activity.finish();
-                        }
-                        break;
+                InputStream is = getAssets().open("address.db");
+                FileOutputStream fos = new FileOutputStream(file);
+                byte[] buffer = new byte[1024];
+                int len = 0;
+                while ((len = is.read(buffer)) != -1) {
+                    fos.write(buffer, 0, len);
                 }
-            }
-        }
-
-        private int firstSensor = 0;
-
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            float[] its = event.values;
-            if (its != null && event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
-                if (audioManager.isWiredHeadsetOn() || audioManager.isBluetoothScoOn() || its[0] == 0.0) {
-                    audioManager.setSpeakerphoneOn(false);
-                    if (MainActivity.lockLayer != null && MainActivity.activity != null) {
-                        MainActivity.lockLayer.unlock();
-                        MainActivity.activity.finish();
-                    }
-                    if (isCalling) {
-                        removeAnswerView();
-                        interrupt(450);
-                        interrupt(600);
-                        WindowManager.LayoutParams wmParams = initParams(WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
-                                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE| WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                                WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-                        createView(wmParams);
-                    }
-                    firstSensor = 1;
-                    TatansLog.d("222222");
-                } else if (firstSensor == 1) {
-                    audioManager.setSpeakerphoneOn(true);
-                    FxService.interrupt(200);
-                    TatansLog.d("1111");
-                }
+                is.close();
+                fos.close();
             }
 
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-        }
-
     }
 }
