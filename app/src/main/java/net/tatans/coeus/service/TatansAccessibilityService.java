@@ -12,7 +12,9 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import net.tatans.coeus.network.tools.TatansLog;
+import net.tatans.coeus.service.activity.EasySettingControl;
 import net.tatans.coeus.service.activity.TatansServiceApplication;
+import net.tatans.coeus.service.activity.WeChatController;
 import net.tatans.coeus.service.tools.TatansService;
 import net.tatans.coeus.service.activity.Demo1;
 import net.tatans.coeus.service.activity.Demo2;
@@ -34,6 +36,8 @@ public class TatansAccessibilityService extends AccessibilityService {
         tatansService = new TatansService();
         tatansService.attach(new Demo1());
         tatansService.attach(new Demo2());
+        tatansService.attach(new EasySettingControl());
+        tatansService.attach(new WeChatController());
         tatansService.notifyInit();
     }
 
