@@ -19,7 +19,7 @@ public class TatansServiceApplication extends TatansApplication{
         super.onCreate();
         CrashHandler crashHandler = CrashHandler.getInstance();
         crashHandler.initTatans("service");
-        TatansLog.TAG="myTag";
+        TatansLog.TAG="TatansService";
         TatansLog.d("TatansServiceApplication");
         mSpeaker = Speaker.getInstance(this);
     }
