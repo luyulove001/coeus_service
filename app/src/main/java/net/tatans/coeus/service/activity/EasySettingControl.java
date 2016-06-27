@@ -18,18 +18,14 @@ import net.tatans.coeus.util.FloatView;
 import java.util.List;
 
 /**
- * Created by Yuriy on 2016/6/24.
+ * Created by xzb on 2016/6/27.
  */
 public class EasySettingControl implements TatansServiceImp {
 	private static String sPackage;
 
-	public void update(AccessibilityServiceSubject subject) {
-
-	}
 	@Override
 	public void onInit() {
 		sPackage="com.android.settings";
-		TatansLog.d("onInit()1");
 		TatansServiceApplication.setContentPackage("com.android.settings");
 	}
 
@@ -49,7 +45,6 @@ public class EasySettingControl implements TatansServiceImp {
 			Log.e("setting", "onAccessibilityEvent setting");
 			easySettingApplication((Application) TatansServiceApplication.getContext(), rowNode);
 		}
-		TatansLog.d("1111111"+event.getPackageName());
 	}
 
 	/**

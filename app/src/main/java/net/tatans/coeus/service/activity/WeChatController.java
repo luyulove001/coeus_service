@@ -21,7 +21,7 @@ import net.tatans.coeus.service.tools.TatansServiceImp;
 import java.util.List;
 
 /**
- * Created by Yuriy on 2016/6/24.
+ * Created by xzb on 2016/6/27.
  */
 public class WeChatController implements TatansServiceImp {
 	private static String sPackage;
@@ -36,13 +36,9 @@ public class WeChatController implements TatansServiceImp {
 	private static boolean firstLoad=true;
 
 	private Speaker speaker;
-	public void update(AccessibilityServiceSubject subject) {
-
-	}
 	@Override
 	public void onInit() {
 		sPackage="com.tencent.mm";
-		TatansLog.d("onInit()1");
 		TatansServiceApplication.setContentPackage("com.tencent.mm");
 	}
 
@@ -62,12 +58,10 @@ public class WeChatController implements TatansServiceImp {
 			Log.e("tencent", "onAccessibilityEvent tencent");
 			popVoiceButton((Application) TatansServiceApplication.getContext(), rowNode);
 		}
-		TatansLog.d("1111111"+event.getPackageName());
 	}
 
 	public void popVoiceButton(final Application application,AccessibilityNodeInfo accessibilityNodeInfo) {
 		speaker = Speaker.getInstance(application);
-		TatansToast.showAndCancel("222");
 		final AccessibilityNodeInfo rowNode = accessibilityNodeInfo;
 		final Application app = application;
 		mAudioManager = (AudioManager) application.getSystemService(Context.AUDIO_SERVICE);
@@ -92,7 +86,6 @@ public class WeChatController implements TatansServiceImp {
 		Log.d(TAG, "speakButton.getText():" + speakButton.getText().toString() + "---speakButton:" + speakButton);
 
 		if (speakButton.getText().toString().equals("松开 结束") && avoidRepeat1) {
-			TatansToast.showAndCancel("111");
 			avoidRepeat2 = true;
 			avoidRepeat1 = false;
 			Log.d(TAG, "it works :松开 结束" + currentVolume);
