@@ -12,39 +12,27 @@ import java.util.List;
  */
 public abstract class AccessibilityServiceSubject {
 	/**
-	 * 用来保存注册的观察者对象
+	 * 用来保存注册的对象
 	 */
 	protected List<TatansServiceImp> observers = new ArrayList<TatansServiceImp>();
-	/**
-	 * 注册观察者对象
-	 * @param observer 观察者对象
-	 */
+
 	public void attach(TatansServiceImp observer) {
 		observers.add(observer);
 	}
-	/**
-	 * 删除观察者对象
-	 * @param observer 观察者对象
-	 */
+
 	public void detach(TatansServiceImp observer) {
 		observers.remove(observer);
 	}
 	public void clear() {
 		observers.clear();
 	}
-	/**
-	 * 通知相应的观察者对象
-	 */
+
 	public abstract void notifyInterrupt();
-	/**
-	 * 通知相应的观察者对象
-	 */
+
 	public abstract void notifyInit();
 
 	public abstract void unbind(Intent intent);
-	/**
-	 * 通知相应的观察者对象
-	 */
+
 	public abstract void notifyAccessibilityEvent(AccessibilityEvent acbEvent, AccessibilityNodeInfo acbNodeInfo);
 
 }
