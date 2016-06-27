@@ -14,9 +14,6 @@ import net.tatans.coeus.service.tools.TatansServiceImp;
 public class Demo2 implements TatansServiceImp {
 	private static String sPackage;
 
-	public void update(AccessibilityServiceSubject subject) {
-	}
-
 	@Override
 	public void onInit() {
 		sPackage="com.qihoo360.mobilesafe";
