@@ -39,7 +39,7 @@ public class WeChatController implements TatansServiceImp {
 	@Override
 	public void onInit() {
 		sPackage="com.tencent.mm";
-		TatansServiceApplication.setContentPackage("com.tencent.mm");
+		TatansServiceApplication.setContentPackage(sPackage);
 	}
 
 	@Override
@@ -54,8 +54,8 @@ public class WeChatController implements TatansServiceImp {
 
 	@Override
 	public void onAccessibilityEvent(AccessibilityEvent event, AccessibilityNodeInfo rowNode) {
-		if (event.getPackageName().equals("com.tencent.mm")) {
-			Log.e("tencent", "onAccessibilityEvent tencent");
+		Log.e("tencent", "onAccessibilityEvent tencent"+event.getPackageName());
+		if (event.getPackageName().equals(sPackage)) {
 			popVoiceButton((Application) TatansServiceApplication.getContext(), rowNode);
 		}
 	}
@@ -113,7 +113,6 @@ public class WeChatController implements TatansServiceImp {
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
-			Log.d(TAG, "按住 说话 :" + currentVolume );
 			if (msg.what==0){
 				speaker.speech("  ");
 				TatansToast.showAndCancel("");

@@ -26,7 +26,7 @@ public class EasySettingControl implements TatansServiceImp {
 	@Override
 	public void onInit() {
 		sPackage="com.android.settings";
-		TatansServiceApplication.setContentPackage("com.android.settings");
+		TatansServiceApplication.setContentPackage(sPackage);
 	}
 
 	@Override
@@ -41,8 +41,8 @@ public class EasySettingControl implements TatansServiceImp {
 
 	@Override
 	public void onAccessibilityEvent(AccessibilityEvent event, AccessibilityNodeInfo rowNode) {
-		if (event.getPackageName().equals("com.android.settings")) {
-			Log.e("setting", "onAccessibilityEvent setting");
+		Log.e("setting", "onAccessibilityEvent setting"+event.getPackageName());
+		if (event.getPackageName().equals(sPackage)) {
 			easySettingApplication((Application) TatansServiceApplication.getContext(), rowNode);
 		}
 	}
