@@ -1,5 +1,6 @@
 package net.tatans.coeus.service.activity;
 
+import android.accessibilityservice.AccessibilityService;
 import android.app.Application;
 import android.content.Intent;
 import android.util.Log;
@@ -40,7 +41,7 @@ public class EasySettingControl implements TatansServiceImp {
 	}
 
 	@Override
-	public void onAccessibilityEvent(AccessibilityEvent event, AccessibilityNodeInfo rowNode) {
+	public void onAccessibilityEvent(AccessibilityService accessibilityService,AccessibilityEvent event, AccessibilityNodeInfo rowNode) {
 		Log.e("setting", "onAccessibilityEvent setting"+event.getPackageName());
 		if (event.getPackageName().equals(sPackage)) {
 			easySettingApplication((Application) TatansServiceApplication.getContext(), rowNode);

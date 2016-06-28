@@ -35,7 +35,7 @@ public class TatansAccessibilityService extends AccessibilityService {
         if (rowNode == null) {
             return;
         } else {
-            tatansService.notifyAccessibilityEvent(event,rowNode);
+            tatansService.notifyAccessibilityEvent(this,event,rowNode);
         }
     }
     @Override
