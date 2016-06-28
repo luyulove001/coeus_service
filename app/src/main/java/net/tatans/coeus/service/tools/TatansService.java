@@ -1,5 +1,6 @@
 package net.tatans.coeus.service.tools;
 
+import android.accessibilityservice.AccessibilityService;
 import android.content.Intent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -34,14 +35,14 @@ public class TatansService extends AccessibilityServiceSubject {
 	}
 
 	@Override
-	public void notifyAccessibilityEvent(AccessibilityEvent acbEvent, AccessibilityNodeInfo acbNodeInfo) {
+	public void notifyAccessibilityEvent(AccessibilityService accessibilityService, AccessibilityEvent acbEvent, AccessibilityNodeInfo acbNodeInfo) {
 		if (null==acbEvent.getPackageName()){
 			return;
 		}
 		for (int i=0;i<observers.size();i++){
 			if (acbEvent.getPackageName().equals(TatansServiceApplication.getContentPackage(i))){
 				TatansServiceImp watcher = observers.get(i);
-				watcher.onAccessibilityEvent(acbEvent,acbNodeInfo);
+				watcher.onAccessibilityEvent(accessibilityService,acbEvent,acbNodeInfo);
 			}
 		}
 	}

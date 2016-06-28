@@ -1,5 +1,6 @@
 package net.tatans.coeus.service.activity;
 
+import android.accessibilityservice.AccessibilityService;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -53,7 +54,7 @@ public class WeChatController implements TatansServiceImp {
 	}
 
 	@Override
-	public void onAccessibilityEvent(AccessibilityEvent event, AccessibilityNodeInfo rowNode) {
+	public void onAccessibilityEvent(AccessibilityService accessibilityService,AccessibilityEvent event, AccessibilityNodeInfo rowNode) {
 		Log.e("tencent", "onAccessibilityEvent tencent"+event.getPackageName());
 		if (event.getPackageName().equals(sPackage)) {
 			popVoiceButton((Application) TatansServiceApplication.getContext(), rowNode);

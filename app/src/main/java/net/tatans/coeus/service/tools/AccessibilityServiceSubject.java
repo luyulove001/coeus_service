@@ -1,5 +1,6 @@
 package net.tatans.coeus.service.tools;
 
+import android.accessibilityservice.AccessibilityService;
 import android.content.Intent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -33,7 +34,7 @@ public abstract class AccessibilityServiceSubject {
 
 	public abstract void unbind(Intent intent);
 
-	public abstract void notifyAccessibilityEvent(AccessibilityEvent acbEvent, AccessibilityNodeInfo acbNodeInfo);
+	public abstract void notifyAccessibilityEvent(AccessibilityService accessibilityService, AccessibilityEvent acbEvent, AccessibilityNodeInfo acbNodeInfo);
 
 }
 
