@@ -1,9 +1,9 @@
 package net.tatans.coeus.service.activity;
 
-import net.tatans.coeus.network.speaker.Speaker;
 import net.tatans.coeus.network.tools.CrashHandler;
 import net.tatans.coeus.network.tools.TatansApplication;
 import net.tatans.coeus.network.tools.TatansLog;
+import net.tatans.coeus.network.tools.TatansSpeaker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
  * Created by Administrator on 2016/3/31.
  */
 public class TatansServiceApplication extends TatansApplication{
-    private static Speaker mSpeaker;
+    private static TatansSpeaker mSpeaker;
     private static List<String> al_contentPackage = new ArrayList<>();
     @Override
     public void onCreate() {
@@ -21,7 +21,8 @@ public class TatansServiceApplication extends TatansApplication{
         crashHandler.initTatans("service");
         TatansLog.TAG="TatansService";
         TatansLog.d("TatansServiceApplication");
-        mSpeaker = Speaker.getInstance(this);
+        setAppSpeaker();
+        mSpeaker = TatansSpeaker.create();
     }
     /*
      * Created by Yuriy on 2016/6/24.
@@ -46,6 +47,6 @@ public class TatansServiceApplication extends TatansApplication{
     }
 
     public static void stopAllSound(){
-        mSpeaker.stopAllSound();
+        mSpeaker.stop();
     }
 }

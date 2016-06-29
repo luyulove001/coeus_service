@@ -161,7 +161,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             public void run() {
                 removeFxView();
             }
-        }, 500);
+        }, 700);
     }
 
     /**
@@ -170,5 +170,11 @@ public class MainActivity extends Activity implements View.OnClickListener, View
     public void removeFxView() {
         lockLayer.unlock();
         finish();
+    }
+    public void onResume() {
+        super.onResume();
+    }
+    public void onPause() {
+        super.onPause();
     }
 }

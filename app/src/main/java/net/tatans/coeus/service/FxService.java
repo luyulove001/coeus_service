@@ -7,6 +7,11 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.PixelFormat;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.provider.ContactsContract;
@@ -30,6 +35,8 @@ import android.widget.TextView;
 
 import net.tatans.coeus.network.tools.TatansApplication;
 import net.tatans.coeus.network.tools.TatansToast;
+import net.tatans.coeus.service.activity.MainActivity;
+import net.tatans.coeus.service.activity.TatansServiceApplication;
 import net.tatans.coeus.util.NumberAddressQueryUtils;
 import net.tatans.coeus.util.PhoneUtil;
 
@@ -41,7 +48,7 @@ import java.io.InputStream;
 public class FxService extends AccessibilityService implements View.OnClickListener, OnTouchListener {
 
     //定义浮动窗口布局
-    private static LinearLayout mFloatLayout, mAnswerLayout;
+    private static View mFloatLayout, mAnswerLayout;
     private LinearLayout lyt_full;
     private LayoutParams wmParams;
     //创建浮动窗口设置布局参数的对象
@@ -55,13 +62,18 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     private TelephonyManager telephonyManager;
     private TextView tv_number;
     public static boolean isDestroy;
+    AudioManager audioManager;
+    SensorManager sensorManager;
+    SensorProximity sensor;
 
     @Override
     public void onCreate() {
         super.onCreate();
         // 获取到系统提供的 电话的服务
-        telephonyManager = (TelephonyManager) getApplicationContext()
-                .getSystemService(Context.TELEPHONY_SERVICE);
+        telephonyManager = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+        audioManager = (AudioManager) getApplication().getSystemService(Context.AUDIO_SERVICE);
+        sensorManager = (SensorManager) getApplication().getSystemService(Context.SENSOR_SERVICE);
+        sensor = new SensorProximity();
         telephonyManager.listen(new MyPhoneLinstener(),
                 PhoneStateListener.LISTEN_CALL_STATE);
         wmParams = new LayoutParams();
@@ -127,7 +139,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         tv_main_more.setText("更多");
         tv_main_more.setContentDescription("更多。按钮");
         if (numbername != null || !"".equals(numbername)) {
-            tv_main_number.setText(queryNumberName(numbername));
+            tv_main_number.setText(numbername);
             lyt_full.setContentDescription(numbername);
         }
         tv_main_end.setText("挂断");
@@ -162,29 +174,6 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     }
 
     @Override
-    public void onAccessibilityEvent(AccessibilityEvent event) {
-        final int eventType = event.getEventType();
-        String eventText = "";
-        switch (eventType) {
-            case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
-                eventText = "TYPE_WINDOW_STATE_CHANGED";
-                if ("OFFHOOK".equals(PHONE_STATE) && mFloatLayout == null) {
-//                    createFloatView(R.layout.float_layout);
-                } else if ("RINGING".equals(PHONE_STATE) && mFloatLayout == null && !isAnswer) {
-//                    createFloatView(R.layout.kb_answer);
-                } else if ("IDLE".equals(PHONE_STATE)) {
-                    removeFxView();
-                }
-                break;
-        }
-        System.out.println(eventText);
-    }
-
-    @Override
-    public void onInterrupt() {
-    }
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_endCall:
@@ -210,20 +199,36 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                 removeFxView();
                 removeAnswerView();
             }
-        }, 500);
+        }, 800);
     }
 
     public  void answerCall() {
+        //4.4接听方法
+//        try {
+//            Intent intent = new Intent("android.intent.action.MEDIA_BUTTON");
+//            KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_HEADSETHOOK);
+//            intent.putExtra("android.intent.extra.KEY_EVENT", keyEvent);
+//            sendOrderedBroadcast(intent, "android.permission.CALL_PRIVILEGED");
+//        } catch (Exception e2) {
+//            Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
+//            KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_HEADSETHOOK);
+//            mediaButtonIntent.putExtra(Intent.EXTRA_KEY_EVENT, keyEvent);
+//            sendOrderedBroadcast(mediaButtonIntent, null);
+//        }
+        //5.1接听方法
         try {
-            Intent intent = new Intent("android.intent.action.MEDIA_BUTTON");
-            KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_HEADSETHOOK);
-            intent.putExtra("android.intent.extra.KEY_EVENT", keyEvent);
-            sendOrderedBroadcast(intent, "android.permission.CALL_PRIVILEGED");
-        } catch (Exception e2) {
-            Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
-            KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_HEADSETHOOK);
-            mediaButtonIntent.putExtra(Intent.EXTRA_KEY_EVENT, keyEvent);
-            sendOrderedBroadcast(mediaButtonIntent, null);
+            Runtime.getRuntime().exec("input keyevent " +
+                    Integer.toString(KeyEvent.KEYCODE_HEADSETHOOK));
+        } catch (IOException e) {
+            String enforcedPerm = "android.permission.CALL_PRIVILEGED";
+            Intent btnDown = new Intent(Intent.ACTION_MEDIA_BUTTON).putExtra(
+                    Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN,
+                            KeyEvent.KEYCODE_HEADSETHOOK));
+            Intent btnUp = new Intent(Intent.ACTION_MEDIA_BUTTON).putExtra(
+                    Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_UP,
+                            KeyEvent.KEYCODE_HEADSETHOOK));
+            sendOrderedBroadcast(btnDown, enforcedPerm);
+            sendOrderedBroadcast(btnUp, enforcedPerm);
         }
         createView();
         isAnswer = true;
@@ -241,25 +246,21 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     }
 
     public static void interrupt(int score) {
-        try {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    AccessibilityManager accessibilityManager = (AccessibilityManager) TatansApplication.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
-                    accessibilityManager.interrupt();
-                    TatansToast.cancel();
-                    Log.e("antony", "打断");
+                    try {
+                        AccessibilityManager accessibilityManager = (AccessibilityManager) TatansApplication.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+                        accessibilityManager.interrupt();
+                        TatansToast.cancel();
+                        Log.e("antony", "打断");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }, score);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
-    @Override
-    protected boolean onKeyEvent(KeyEvent event) {
-        return super.onKeyEvent(event);
-    }
 
     @Override
     public void onDestroy() {
@@ -267,6 +268,17 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         isDestroy = true;
         super.onDestroy();
     }
+
+    @Override
+    public void onAccessibilityEvent(AccessibilityEvent event) {
+
+    }
+
+    @Override
+    public void onInterrupt() {
+
+    }
+
 
     /**
      * 移除悬浮窗口
@@ -276,6 +288,15 @@ public class FxService extends AccessibilityService implements View.OnClickListe
             //移除悬浮窗口
             mWindowManager.removeView(mFloatLayout);
             mFloatLayout = null;
+        }
+    }
+    public static void destoryView() {
+        try {
+            if (mFloatLayout != null && mWindowManager != null)
+                mWindowManager.removeView(mFloatLayout);
+        }
+        catch (IllegalArgumentException e){
+            e.printStackTrace();
         }
     }
 
@@ -303,32 +324,38 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                 case TelephonyManager.CALL_STATE_OFFHOOK:
                     PHONE_STATE = "OFFHOOK";
 //                    removeFxView();
-                    Application.stopAllSound();
+                    TatansServiceApplication.stopAllSound();
+                    sensorManager.registerListener(sensor,
+                            sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY),
+                            SensorManager.SENSOR_DELAY_NORMAL);
                     break;
                 case TelephonyManager.CALL_STATE_RINGING:
-                    removeAnswerView();
-                    removeFxView();
+                    removeAllView();
                     //查询该号码对应的名字
                     numbername = queryNumberName(incomingNumber);
                     PHONE_STATE = "RINGING";
                     createFloatView(R.layout.kb_answer);
                     tv_number.setText(numbername);
-                    Application.speech("来电:" + numbername + "。来电:" + numbername);
+                    TatansServiceApplication.speech("来电:" + numbername + "。来电:" + numbername);
                     Log.e("antony", "speech");
                     break;
                 case TelephonyManager.CALL_STATE_IDLE:
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            removeFxView();
-                            removeAnswerView();
-                        }
-                    }, 1600);
-                    Application.stopAllSound();
+                    sensorManager.unregisterListener(sensor);
+                    removeAllView();
+                    TatansServiceApplication.stopAllSound();
                     PHONE_STATE = "IDLE";
                     isAnswer = false;
                     break;
             }
+        }
+    }
+
+    private void removeAllView() {
+        removeAnswerView();
+        removeFxView();
+        if (MainActivity.lockLayer != null && MainActivity.activity != null) {
+            MainActivity.lockLayer.unlock();
+            MainActivity.activity.finish();
         }
     }
 
@@ -401,6 +428,38 @@ public class FxService extends AccessibilityService implements View.OnClickListe
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private class SensorProximity implements SensorEventListener {
+
+        private int firstSensor = 0;
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            float[] its = event.values;
+            if (its != null && event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
+                if (audioManager.isWiredHeadsetOn() || audioManager.isBluetoothScoOn() || its[0] == 0.0) {
+                    //靠近手机，设置扬声器外放false
+                    audioManager.setSpeakerphoneOn(false);
+                    FxService.interrupt(450);
+                    FxService.interrupt(600);
+                    firstSensor = 1;
+                } else if (firstSensor == 1) {
+                    //离开手机，设置扬声器外方true
+                    audioManager.setSpeakerphoneOn(true);
+                    FxService.interrupt(200);
+                }else {
+                    //默认听筒
+                    audioManager.setSpeakerphoneOn(false);
+                }
+            }
+
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
         }
     }
 }

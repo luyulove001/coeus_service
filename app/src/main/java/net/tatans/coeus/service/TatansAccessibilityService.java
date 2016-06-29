@@ -6,9 +6,7 @@ import android.content.Intent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import net.tatans.coeus.service.activity.EasySettingControl;
 import net.tatans.coeus.service.activity.TatansServiceApplication;
-import net.tatans.coeus.service.activity.WeChatController;
 import net.tatans.coeus.service.tools.TatansService;
 
 
@@ -25,7 +23,10 @@ public class TatansAccessibilityService extends AccessibilityService {
         tatansService = new TatansService();
         tatansService.attach(new EasySettingControl());
         tatansService.attach(new WeChatController());
+        tatansService.attach(new InCallControl());
+        tatansService.attach(new MessageSetControl());
         tatansService.notifyInit();
+        startService(new Intent(getApplication(), FxService.class));
     }
 
     @SuppressLint("NewApi")
@@ -50,5 +51,9 @@ public class TatansAccessibilityService extends AccessibilityService {
         return super.onUnbind(intent);
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+//        FxService.isDestroy = true;
+    }
 }

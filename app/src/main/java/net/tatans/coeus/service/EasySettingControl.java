@@ -1,4 +1,4 @@
-package net.tatans.coeus.service.activity;
+package net.tatans.coeus.service;
 
 import android.accessibilityservice.AccessibilityService;
 import android.app.Application;
@@ -11,8 +11,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import net.tatans.coeus.network.tools.TatansLog;
-import net.tatans.coeus.service.R;
-import net.tatans.coeus.service.tools.AccessibilityServiceSubject;
+import net.tatans.coeus.service.activity.TatansServiceApplication;
 import net.tatans.coeus.service.tools.TatansServiceImp;
 import net.tatans.coeus.util.FloatView;
 

@@ -49,12 +49,12 @@
         </service>
 
         <!-- 来电监听广播 -->
-       <!-- <receiver android:name=".FxService$PhoneBroadcastReceiver">
+        <receiver android:name="net.tatans.coeus.braodcastReciver.PhoneBroadcastReceiver">
             <intent-filter android:priority="1000">
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL"/>
                 <action android:name="android.intent.action.PHONE_STATE"/>
             </intent-filter>
-        </receiver>-->
+        </receiver>
         <!-- 接听辅助 -->
         <service
             android:name=".FxService"

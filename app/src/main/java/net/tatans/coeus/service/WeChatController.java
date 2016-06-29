@@ -1,4 +1,4 @@
-package net.tatans.coeus.service.activity;
+package net.tatans.coeus.service;
 
 import android.accessibilityservice.AccessibilityService;
 import android.app.Application;
@@ -8,15 +8,13 @@ import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.Toast;
 
-import net.tatans.coeus.network.speaker.Speaker;
 import net.tatans.coeus.network.tools.TatansLog;
+import net.tatans.coeus.network.tools.TatansSpeaker;
 import net.tatans.coeus.network.tools.TatansToast;
-import net.tatans.coeus.service.tools.AccessibilityServiceSubject;
+import net.tatans.coeus.service.activity.TatansServiceApplication;
 import net.tatans.coeus.service.tools.TatansServiceImp;
 
 import java.util.List;
@@ -36,7 +34,7 @@ public class WeChatController implements TatansServiceImp {
 	private AccessibilityNodeInfo speakButton;
 	private static boolean firstLoad=true;
 
-	private Speaker speaker;
+	private TatansSpeaker speaker;
 	@Override
 	public void onInit() {
 		sPackage="com.tencent.mm";
@@ -62,7 +60,7 @@ public class WeChatController implements TatansServiceImp {
 	}
 
 	public void popVoiceButton(final Application application,AccessibilityNodeInfo accessibilityNodeInfo) {
-		speaker = Speaker.getInstance(application);
+		speaker = TatansSpeaker.create();
 		final AccessibilityNodeInfo rowNode = accessibilityNodeInfo;
 		final Application app = application;
 		mAudioManager = (AudioManager) application.getSystemService(Context.AUDIO_SERVICE);
