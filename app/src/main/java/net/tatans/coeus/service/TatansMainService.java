@@ -6,16 +6,17 @@ import android.content.Intent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import net.tatans.coeus.network.tools.TatansLog;
 import net.tatans.coeus.service.activity.TatansServiceApplication;
 import net.tatans.coeus.service.tools.TatansService;
 
 
 /**
-  * ClassName :TatansAccessibilityService
+  * ClassName :TatansMainService
   * @author: Yuriy
   * Created time : 2016/6/24 14:44.
   */
-public class TatansAccessibilityService extends AccessibilityService {
+public class TatansMainService extends AccessibilityService {
     protected TatansService tatansService;
     @Override
     protected void onServiceConnected() {
@@ -32,6 +33,7 @@ public class TatansAccessibilityService extends AccessibilityService {
     @SuppressLint("NewApi")
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+        TatansLog.d("111111111111111111");
         AccessibilityNodeInfo rowNode = getRootInActiveWindow();
         if (rowNode == null) {
             return;
