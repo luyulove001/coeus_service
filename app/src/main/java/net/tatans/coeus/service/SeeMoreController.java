@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import net.tatans.coeus.adapter.SettingSpeedAdapter;
+import net.tatans.coeus.network.tools.TatansPreferences;
 import net.tatans.coeus.service.activity.TatansServiceApplication;
 import net.tatans.coeus.service.tools.TatansServiceImp;
 import net.tatans.coeus.util.FloatView;
@@ -42,6 +43,8 @@ public class SeeMoreController implements TatansServiceImp {
         if(event.getEventType()==AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED){
             if (event.getPackageName().equals(sPackage)) {
                 displayVolumeControllerOnProgressbar(accessibilityService,(Application) TatansServiceApplication.getContext(),acbNodeInfo,event);
+            }else{//对按home键进行处理
+                resumeSystemStatus();
             }
         }
 
@@ -63,7 +66,8 @@ public class SeeMoreController implements TatansServiceImp {
             //当滑动条出现
             View see_more_tts = FloatView.createFloatView(application, R.layout.see_more_tts); //渲染布局
             ListView lv_main = (ListView)see_more_tts.findViewById(R.id.lv_main);
-            SettingSpeedAdapter listAdapter = new SettingSpeedAdapter(application, speedArray,"1");
+            String playSpeed = (String) TatansPreferences.get("playSpeed", "1");
+            SettingSpeedAdapter listAdapter = new SettingSpeedAdapter(application, speedArray,playSpeed);
             lv_main.setAdapter(listAdapter);
             lv_main.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -77,6 +81,7 @@ public class SeeMoreController implements TatansServiceImp {
                         vb_setup_seekBar.get(0).performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
                     }
                     comfirm.get(0).performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    TatansPreferences.put("playSpeed", speedArray[position]);
                     exitVoiceSpeedSetting(accessibilityService);
 //                    event.getSource().performAction(AccessibilityService.GLOBAL_ACTION_BACK);
                 }

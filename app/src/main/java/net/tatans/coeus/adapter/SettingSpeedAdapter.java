@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import net.tatans.coeus.network.tools.TatansApplication;
 import net.tatans.coeus.service.R;
 
 
@@ -67,6 +68,7 @@ public class SettingSpeedAdapter extends BaseAdapter {
                 public boolean onHover(View v, MotionEvent event) {
                     switch (event.getAction()) {
                         case MotionEvent.ACTION_HOVER_ENTER:
+                            TatansApplication.speech("语速+"+speed+"，已选中");
 //                            TatansApplication.speech("语速+"+speed+"，已选中"
 //                                    , mPlaySpeed, new TatansSpeakerCallback() {
 //                                        @Override
@@ -88,6 +90,7 @@ public class SettingSpeedAdapter extends BaseAdapter {
                 public boolean onHover(View v, MotionEvent event) {
                     switch (event.getAction()) {
                         case MotionEvent.ACTION_HOVER_ENTER:
+                            TatansApplication.speech("语速" + speed + "，未选中，点按可切换");
 //                            TatansApplication.speech("语速" + speed + "，未选中，点按可切换", mPlaySpeed, new TatansSpeakerCallback() {
 //                                @Override
 //                                public void onCompleted() {

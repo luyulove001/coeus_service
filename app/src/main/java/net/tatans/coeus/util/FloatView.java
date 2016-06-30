@@ -61,14 +61,16 @@ public class FloatView {
                 WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;
 
         //调整悬浮窗显示的停靠位置为左侧置顶
-        wmParams.gravity = /*Gravity.LEFT |*/ Gravity.TOP;
+//        wmParams.gravity = /*Gravity.LEFT |*/ Gravity.TOP;
 
         // 以屏幕左上角为原点，设置x、y初始值
         wmParams.x = 0;
         wmParams.y = 0;
         //设置悬浮窗口长宽数据
-        wmParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        wmParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+//        wmParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+//        wmParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        wmParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        wmParams.height = WindowManager.LayoutParams.MATCH_PARENT;
         return wmParams;
     }
 

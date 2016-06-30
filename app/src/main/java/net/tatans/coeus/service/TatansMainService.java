@@ -26,6 +26,7 @@ public class TatansMainService extends AccessibilityService {
         tatansService.attach(new WeChatController());
         tatansService.attach(new InCallControl());
         tatansService.attach(new MessageSetControl());
+        tatansService.attach(new SeeMoreController());
         tatansService.notifyInit();
         startService(new Intent(getApplication(), FxService.class));
     }
