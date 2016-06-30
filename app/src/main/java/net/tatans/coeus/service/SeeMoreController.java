@@ -41,7 +41,7 @@ public class SeeMoreController implements TatansServiceImp {
     public void onAccessibilityEvent(AccessibilityService accessibilityService, AccessibilityEvent event, AccessibilityNodeInfo acbNodeInfo) {
         Log.e("SeeMoreController", "onAccessibilityEvent setting"+event.getPackageName());
         if(event.getEventType()==AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED){
-            if (event.getPackageName().equals(sPackage)) {
+            if (event.getPackageName().toString().equals(sPackage)) {
                 displayVolumeControllerOnProgressbar(accessibilityService,(Application) TatansServiceApplication.getContext(),acbNodeInfo,event);
             }else{//对按home键进行处理
                 resumeSystemStatus();
