@@ -62,7 +62,7 @@ public class SettingSpeedAdapter extends BaseAdapter {
         if (playSpeed.equals(speed)) {
             holder.icon.setImageBitmap(choice_icon);
             holder.text.setText(speed);
-            holder.text.setContentDescription("。");
+            holder.text.setContentDescription("语速+"+speed+"，已选中");
             holder.text.setOnHoverListener(new View.OnHoverListener() {
                 @Override
                 public boolean onHover(View v, MotionEvent event) {
@@ -84,7 +84,7 @@ public class SettingSpeedAdapter extends BaseAdapter {
         } else {
             holder.icon.setImageBitmap(transparent_icon);
             holder.text.setText(speed);
-            holder.text.setContentDescription("。");
+            holder.text.setContentDescription("语速" + speed + "，未选中，点按可切换");
             holder.text.setOnHoverListener(new View.OnHoverListener() {
                 @Override
                 public boolean onHover(View v, MotionEvent event) {
