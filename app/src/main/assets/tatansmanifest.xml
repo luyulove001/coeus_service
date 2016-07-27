@@ -20,4 +20,9 @@
         <service-package>com.tencent.mm</service-package>
     </tatans-service>
 
+   <!-- <tatans-service>
+        <service>MessageSetControl</service>
+        <service-package>com.android.settings</service-package>
+    </tatans-service>-->
+
 </manifest>
