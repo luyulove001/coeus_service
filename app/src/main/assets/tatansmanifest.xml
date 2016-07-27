@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest author="Yuriy" date="2016-07-22" package="net.tatans.coeus.service">
+    <tatans-service>
+        <service>EasySettingControl</service>
+        <service-package>com.android.settings</service-package>
+    </tatans-service>
+
+    <tatans-service>
+        <service>InCallControl</service>
+        <service-package>com.android.dialer</service-package>
+    </tatans-service>
+
+    <tatans-service>
+        <service>SeeMoreController</service>
+        <service-package>com.xingmu.tts</service-package>
+    </tatans-service>
+
+    <tatans-service>
+        <service>WeChatController</service>
+        <service-package>com.tencent.mm</service-package>
+    </tatans-service>
+
+</manifest>

@@ -12,39 +12,18 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import net.tatans.coeus.network.tools.TatansLog;
 import net.tatans.coeus.service.activity.TatansServiceApplication;
-import net.tatans.coeus.service.tools.TatansServiceImp;
 import net.tatans.coeus.util.FloatView;
 
 import java.util.List;
 
 /**
- * Created by xzb on 2016/6/27.
+ * Created by xzb on 2016/6/27
+ * .
  */
-public class EasySettingControl implements TatansServiceImp {
-	private static String sPackage;
-
-	@Override
-	public void onInit() {
-		sPackage="com.android.settings";
-		TatansServiceApplication.setContentPackage(sPackage);
-	}
-
-	@Override
-	public void onInterrupt() {
-		TatansLog.d("onInterrupt()1");
-	}
-
-	@Override
-	public void onUnbind(Intent intent) {
-		TatansLog.d("onUnbind()1");
-	}
-
+public class EasySettingControl extends TatansService {
 	@Override
 	public void onAccessibilityEvent(AccessibilityService accessibilityService,AccessibilityEvent event, AccessibilityNodeInfo rowNode) {
-		Log.e("setting", "onAccessibilityEvent setting"+event.getPackageName());
-		if (event.getPackageName().equals(sPackage)) {
-			easySettingApplication((Application) TatansServiceApplication.getContext(), rowNode);
-		}
+		easySettingApplication((Application) TatansServiceApplication.getContext(), rowNode);
 	}
 
 	/**
@@ -84,7 +63,6 @@ public class EasySettingControl implements TatansServiceImp {
 					}
 				}
 			}
-
 		}
 	}
 }

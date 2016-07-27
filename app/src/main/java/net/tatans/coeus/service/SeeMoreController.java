@@ -13,24 +13,12 @@ import android.widget.ListView;
 import net.tatans.coeus.adapter.SettingSpeedAdapter;
 import net.tatans.coeus.network.tools.TatansPreferences;
 import net.tatans.coeus.service.activity.TatansServiceApplication;
-import net.tatans.coeus.service.tools.TatansServiceImp;
 import net.tatans.coeus.util.FloatView;
 
 import java.util.List;
 
-public class SeeMoreController implements TatansServiceImp {
+public class SeeMoreController extends TatansService {
     private String[] speedArray = new String[]{"1", "2", "3", "4", "5"};
-    private static String sPackage="com.xingmu.tts";
-
-    @Override
-    public void onInit() {
-        TatansServiceApplication.setContentPackage(sPackage);
-    }
-
-    @Override
-    public void onInterrupt() {
-
-    }
 
     @Override
     public void onUnbind(Intent intent) {
@@ -41,11 +29,12 @@ public class SeeMoreController implements TatansServiceImp {
     public void onAccessibilityEvent(AccessibilityService accessibilityService, AccessibilityEvent event, AccessibilityNodeInfo acbNodeInfo) {
         Log.e("SeeMoreController", "onAccessibilityEvent setting"+event.getPackageName());
         if(event.getEventType()==AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED){
-            if (event.getPackageName().toString().equals(sPackage)) {
+            displayVolumeControllerOnProgressbar(accessibilityService,(Application) TatansServiceApplication.getContext(),acbNodeInfo,event);
+          /*  if (event.getPackageName().toString().equals(sPackage)) {
                 displayVolumeControllerOnProgressbar(accessibilityService,(Application) TatansServiceApplication.getContext(),acbNodeInfo,event);
             }else{//对按home键进行处理
                 resumeSystemStatus();
-            }
+            }*/
         }
 
     }

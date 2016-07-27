@@ -83,6 +83,7 @@ android {
 
 dependencies {
     compile 'net.tatans.coeus:coeus-network:5.4.0-SNAPSHOT'
+    compile files('libs/dom4j-1.6.1.jar')
     compile 'net.tatans.coeus:coeus-sound:1.0.0-release'
     compile 'com.android.support:appcompat-v7:22.2.1'
 }

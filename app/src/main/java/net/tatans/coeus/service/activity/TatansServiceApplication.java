@@ -24,24 +24,6 @@ public class TatansServiceApplication extends TatansApplication{
         setAppSpeaker();
         mSpeaker = TatansSpeaker.create();
     }
-    /*
-     * Created by Yuriy on 2016/6/24.
-     */
-    public static void setContentPackage(String s){
-        al_contentPackage.add(s);
-    }
-    /*
-     * Created by Yuriy on 2016/6/24.
-     */
-    public static void rmContentPackage(){
-        al_contentPackage.clear();
-    }
-    /*
-     * Created by Yuriy on 2016/6/24.
-     */
-    public static String getContentPackage(int s){
-        return al_contentPackage.get(s);
-    }
     public static void speech(String str){
         mSpeaker.speech(str);
     }

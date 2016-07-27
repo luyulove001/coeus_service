@@ -15,14 +15,13 @@ import net.tatans.coeus.network.tools.TatansLog;
 import net.tatans.coeus.network.tools.TatansSpeaker;
 import net.tatans.coeus.network.tools.TatansToast;
 import net.tatans.coeus.service.activity.TatansServiceApplication;
-import net.tatans.coeus.service.tools.TatansServiceImp;
 
 import java.util.List;
 
 /**
  * Created by xzb on 2016/6/27.
  */
-public class WeChatController implements TatansServiceImp {
+public class WeChatController extends TatansService {
 	private static String sPackage;
 	private static final String TAG = "WeChatController";
 	private static int currentVolume ;
@@ -35,16 +34,7 @@ public class WeChatController implements TatansServiceImp {
 	private static boolean firstLoad=true;
 
 	private TatansSpeaker speaker;
-	@Override
-	public void onInit() {
-		sPackage="com.tencent.mm";
-		TatansServiceApplication.setContentPackage(sPackage);
-	}
 
-	@Override
-	public void onInterrupt() {
-		TatansLog.d("onInterrupt()1");
-	}
 
 	@Override
 	public void onUnbind(Intent intent) {
@@ -53,10 +43,11 @@ public class WeChatController implements TatansServiceImp {
 
 	@Override
 	public void onAccessibilityEvent(AccessibilityService accessibilityService,AccessibilityEvent event, AccessibilityNodeInfo rowNode) {
-		Log.e("tencent", "onAccessibilityEvent tencent"+event.getPackageName());
+		popVoiceButton((Application) TatansServiceApplication.getContext(), rowNode);
+		/*Log.e("tencent", "onAccessibilityEvent tencent"+event.getPackageName());
 		if (event.getPackageName().equals(sPackage)) {
 			popVoiceButton((Application) TatansServiceApplication.getContext(), rowNode);
-		}
+		}*/
 	}
 
 	public void popVoiceButton(final Application application,AccessibilityNodeInfo accessibilityNodeInfo) {

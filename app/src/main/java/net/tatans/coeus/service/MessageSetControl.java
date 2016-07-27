@@ -6,32 +6,13 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import net.tatans.coeus.service.activity.TatansServiceApplication;
-import net.tatans.coeus.service.tools.TatansServiceImp;
 
 import java.util.List;
 
 /**
  * Created by Administrator on 2016/6/29.
  */
-public class MessageSetControl implements TatansServiceImp {
-    private static String mPackageName;
-
-    @Override
-    public void onInit() {
-        mPackageName = "com.android.settings";
-        TatansServiceApplication.setContentPackage(mPackageName);
-    }
-
-    @Override
-    public void onInterrupt() {
-
-    }
-
-    @Override
-    public void onUnbind(Intent intent) {
-
-    }
+public class MessageSetControl extends TatansService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityService accessibilityService, AccessibilityEvent acbEvent, AccessibilityNodeInfo acbNodeInfo) {
