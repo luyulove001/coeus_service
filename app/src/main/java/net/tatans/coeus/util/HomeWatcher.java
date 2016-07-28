@@ -11,7 +11,7 @@ import net.tatans.coeus.util.OnHomeKeyEven;
 /**
  * Home键监听封装
  * 
- * @author luojianqin
+ * @author Yuriy
  * 
  */
 public class HomeWatcher {
