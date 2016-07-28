@@ -14,6 +14,7 @@ import net.tatans.coeus.adapter.SettingSpeedAdapter;
 import net.tatans.coeus.network.tools.TatansPreferences;
 import net.tatans.coeus.service.activity.TatansServiceApplication;
 import net.tatans.coeus.util.FloatView;
+import net.tatans.coeus.util.OnHomeKeyEven;
 
 import java.util.List;
 
@@ -27,6 +28,8 @@ public class SeeMoreController extends TatansService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityService accessibilityService, AccessibilityEvent event, AccessibilityNodeInfo acbNodeInfo) {
+        super.onAccessibilityEvent( accessibilityService,  event,  acbNodeInfo);
+        startHomeKeyPressed(accessibilityService);
         Log.e("SeeMoreController", "onAccessibilityEvent setting"+event.getPackageName());
         if(event.getEventType()==AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED){
             displayVolumeControllerOnProgressbar(accessibilityService,(Application) TatansServiceApplication.getContext(),acbNodeInfo,event);
@@ -83,6 +86,12 @@ public class SeeMoreController extends TatansService {
     public void exitVoiceSpeedSetting(AccessibilityService accessibilityService) {
         FloatView.destoryView();
         accessibilityService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+    }
+
+    @Override
+    public void onHomeKeyPressed(OnHomeKeyEven onHomeKeyEven) {
+        resumeSystemStatus();
+        super.closeHomeKeyPressed();
     }
 
     public  void resumeSystemStatus() {
