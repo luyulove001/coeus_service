@@ -20,6 +20,7 @@ import java.util.List;
 
 /**
  * Created by xzb on 2016/6/27.
+ * 对微信中的录音键（“按住说话”进行控制，按住时系统静音）
  */
 public class WeChatController extends TatansService {
 	private static String sPackage;
