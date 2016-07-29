@@ -18,6 +18,9 @@ import net.tatans.coeus.util.OnHomeKeyEven;
 
 import java.util.List;
 
+/**
+ * 对星目tts引擎中的语速调节进行控制
+ */
 public class SeeMoreController extends TatansService {
     private String[] speedArray = new String[]{"1", "2", "3", "4", "5"};
 
@@ -98,10 +101,10 @@ public class SeeMoreController extends TatansService {
         FloatView.destoryView();
     }
 
-    public  void handlerHomeAction(AccessibilityService accessibilityService) {
+    public  void handleHomeAction(AccessibilityService accessibilityService) {
         exitVoiceSpeedSetting(accessibilityService);
     }
-    public  void handlerBackAction(AccessibilityService accessibilityService) {
+    public  void handleBackAction(AccessibilityService accessibilityService) {
         exitVoiceSpeedSetting(accessibilityService);
     }
 }
