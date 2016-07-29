@@ -10,7 +10,8 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import java.util.List;
 
 /**
- * Created by Administrator on 2016/6/29.
+ * 默认短信设置，当有默认短信设置窗口弹出来时自动点击下一步
+ * Created by cly on 2016/6/29.
  */
 public class MessageSetControl extends TatansService {
 
@@ -28,6 +29,10 @@ public class MessageSetControl extends TatansService {
         }
     }
 
+    /**
+     * 有默认短信设置弹出时自动点击下一步，确定
+     * @param event
+     */
     private void processKillApplication(AccessibilityEvent event) {
 
         if (event.getSource() != null) {
