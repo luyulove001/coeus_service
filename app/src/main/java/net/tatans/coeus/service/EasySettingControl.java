@@ -26,7 +26,7 @@ public class EasySettingControl extends TatansService {
 		easySettingApplication((Application) TatansServiceApplication.getContext(), rowNode);
 		this.processAccessibilityEvent(event);
 	}
-
+	//针对小米手机的默认短信设置
 	private void processAccessibilityEvent(AccessibilityEvent event) {
 		Log.d("test", event.eventTypeToString(event.getEventType()));
 		if (event.getSource() == null) {
@@ -35,7 +35,6 @@ public class EasySettingControl extends TatansService {
 			processKillApplication(event);
 		}
 	}
-
 	private void processKillApplication(AccessibilityEvent event) {
 
 		if (event.getSource() != null) {
@@ -68,7 +67,7 @@ public class EasySettingControl extends TatansService {
 		}
 	}
 	/**
-	 * xzb   极简模式覆盖窗口
+	 * xzb   针对小米手机不让进入老人机的方法,极简模式覆盖窗口
 	 * @param application
 	 * @param accessibilityNodeInfo
 	 */

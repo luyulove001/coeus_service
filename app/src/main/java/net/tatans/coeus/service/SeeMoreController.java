@@ -91,7 +91,7 @@ public class SeeMoreController extends TatansService {
     @Override
     public void onHomeKeyPressed(OnHomeKeyEven onHomeKeyEven) {
         resumeSystemStatus();
-        super.closeHomeKeyPressed();
+        super.stopHomeKeyPressed();
     }
 
     public  void resumeSystemStatus() {
