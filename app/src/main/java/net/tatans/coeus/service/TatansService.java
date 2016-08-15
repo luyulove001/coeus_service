@@ -18,22 +18,24 @@ import net.tatans.coeus.util.OnHomePressedListener;
 public abstract class TatansService implements OnHomePressedListener {
     private static HomeWatcher mHomeWatcher;
 
-    public void onInit(){  };
-    public void onInterrupt(){};
-    public void onUnbind(Intent intent){};
+    public void onInit(){  }
+
+    public void onInterrupt(){}
+
+    public void onUnbind(Intent intent){}
+
     public void onAccessibilityEvent(AccessibilityService accessibilityService, AccessibilityEvent acbEvent, AccessibilityNodeInfo acbNodeInfo){
-    };
+    }
+
     protected void startHomeKeyPressed(AccessibilityService accessibilityService){
         mHomeWatcher = HomeWatcher.getInstance(accessibilityService);
         mHomeWatcher.setOnHomePressedListener(this);
         mHomeWatcher.startWatch();
     }
-
     @Override
     public void onHomeKeyPressed(OnHomeKeyEven onHomeKeyEven) {
 
     }
     protected void stopHomeKeyPressed(){
-        mHomeWatcher.stopWatch();
     }
 }
