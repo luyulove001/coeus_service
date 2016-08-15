@@ -3,4 +3,5 @@
     <color name="black">#000</color>
     <color name="white">#fff</color>
     <color name="blue">#71fffd</color>
+    <color name="wechat_pay">#F5F5F5</color>
 </resources>
