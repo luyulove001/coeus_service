@@ -131,12 +131,16 @@ public class WeChatController extends TatansService {
 		}
 		final AccessibilityNodeInfo rowNode = accessibilityNodeInfo;
 		final List<AccessibilityNodeInfo> payMoney = rowNode.findAccessibilityNodeInfosByText("请输入支付密码，以验证身份");
-		final List<AccessibilityNodeInfo> beginPay = rowNode.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/da");
+        //根据不同版本做分析
+		final List<AccessibilityNodeInfo> beginPay = rowNode.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/e9");
 		if(beginPay==null||beginPay.size()==0){
+            Log.i("popSoftKeyboardOnPay", "floatView,beginPay:" );
 			return ;
 		}
+        Log.i("popSoftKeyboardOnPay", "floatView,payMoney:"+payMoney );
 		if((payMoney!=null&&payMoney.size()>0)){
             floatView = FloatView.createFloatView(application, R.layout.wechat_pay);
+			Log.i("popSoftKeyboardOnPay", "floatView,createFloatView:"+floatView );
 			setListener(floatView);
 		}
 	}
