@@ -32,10 +32,12 @@ public abstract class TatansService implements OnHomePressedListener {
         mHomeWatcher.setOnHomePressedListener(this);
         mHomeWatcher.startWatch();
     }
+
     @Override
     public void onHomeKeyPressed(OnHomeKeyEven onHomeKeyEven) {
 
     }
     protected void stopHomeKeyPressed(){
+        mHomeWatcher.stopWatch();
     }
 }
