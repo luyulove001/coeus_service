@@ -17,10 +17,10 @@ import net.tatans.coeus.util.OnHomeKeyEven;
 public class HomeWatcher {
 
 	static final String TAG = "HomeWatcher";
-	private static Context mContext;
-	private static IntentFilter mFilter;
+	private Context mContext;
+	private IntentFilter mFilter;
 	private OnHomePressedListener mListener;
-	private static InnerRecevier mRecevier;
+	private InnerRecevier mRecevier;
 	private static HomeWatcher mHomeWatcher;
 
 	public static synchronized HomeWatcher getInstance(Context context){
