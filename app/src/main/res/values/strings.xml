@@ -9,4 +9,5 @@
     <string name="easy_setting">极简模式的无障碍化体验很差，建议您不要开启此模式！点击可退出</string>
     <string name="wechat_pay_descrition">请输入支付密码，已验证身份</string>
     <string name="wechat_pay_del">删除</string>
+    <string name="wechat_pay_down_description">隐藏</string>
 </resources>
