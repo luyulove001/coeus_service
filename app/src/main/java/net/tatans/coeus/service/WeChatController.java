@@ -132,8 +132,10 @@ public class WeChatController extends TatansService {
 		final AccessibilityNodeInfo rowNode = accessibilityNodeInfo;
 		final List<AccessibilityNodeInfo> payMoney = rowNode.findAccessibilityNodeInfosByText("请输入支付密码，以验证身份");
         //根据不同版本做分析
-		final List<AccessibilityNodeInfo> beginPay = rowNode.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/e9");
-		if(beginPay==null||beginPay.size()==0){
+//		final List<AccessibilityNodeInfo> beginPay = rowNode.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/e9");
+		final List<AccessibilityNodeInfo> beginPay1 = rowNode.findAccessibilityNodeInfosByText("开启付款");
+		final List<AccessibilityNodeInfo> beginPay2 = rowNode.findAccessibilityNodeInfosByText("微信安全支付");
+		if((beginPay1==null||beginPay1.size()==0)||(beginPay1==null||beginPay1.size()==0)){
             Log.i("popSoftKeyboardOnPay", "floatView,beginPay:" );
 			return ;
 		}
@@ -151,6 +153,7 @@ public class WeChatController extends TatansService {
             FloatView.destoryView();
         }
     }
+
 
     private void setListener(View weixinView) {
 		weixinView.findViewById(R.id.wechat_1).setOnClickListener(new View.OnClickListener() {
@@ -264,6 +267,12 @@ public class WeChatController extends TatansService {
 				}
 			}
 		});
+//		weixinView.findViewById(R.id.wechat_down).setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//                resumeSystemStatus();
+//			}
+//		});
 	}
 
 
