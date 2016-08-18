@@ -55,8 +55,9 @@ public class SeeMoreController extends TatansService {
 //            Log.d("SeeMoreController", " voiceSetting: performAction  AccessibilityEvent：" + event);
 //        }
         final List<AccessibilityNodeInfo> vb_setup_seekBar = rowNode.findAccessibilityNodeInfosByViewId("com.xingmu.tts:id/vb_setup_seekBar");
+        List<AccessibilityNodeInfo> voiceSpeed = rowNode.findAccessibilityNodeInfosByText("语速");//与语调区别
         final List<AccessibilityNodeInfo> comfirm = rowNode.findAccessibilityNodeInfosByViewId("android:id/button1");
-        if(vb_setup_seekBar.size()>0&&comfirm.size()>0){
+        if((vb_setup_seekBar.size()>0&&comfirm.size()>0)&&(voiceSpeed!=null&&voiceSpeed.size()>0)){
             Log.d("SeeMoreController","vb_setup_seekBar:");
             //当滑动条出现
             View see_more_tts = FloatView.createFloatView(application, R.layout.see_more_tts); //渲染布局

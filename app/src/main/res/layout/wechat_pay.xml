@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:contentDescription="@string/wechat_pay_descrition"
+        >
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#dcdcdc"
+        android:orientation="vertical"
+        android:contentDescription=""
+        >
+        <LinearLayout
+            android:id="@+id/wechat_down"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:contentDescription="@string/wechat_pay_down_description"
+            >
+            <ImageButton
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:scaleType="center"
+                android:clickable="false"
+                android:background="@color/wechat_pay"
+                android:src="@drawable/icon_down" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="1dp"
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@color/wechat_pay"
+                android:layout_weight="1"
+                android:text="1"
+                android:textColor="@color/black"
+                android:contentDescription="1"
+                android:textSize="33.3sp"
+                android:id="@+id/wechat_1"
+                android:layout_gravity="center_horizontal" />
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="1dp"
+                android:background="@color/wechat_pay"
+                android:layout_height="match_parent"
+                android:text="2"
+                android:textColor="@color/black"
+                android:contentDescription="2"
+                android:textSize="33.3sp"
+                android:id="@+id/wechat_2"
+                android:layout_gravity="center_horizontal" />
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="1dp"
+                android:background="@color/wechat_pay"
+                android:layout_height="match_parent"
+                android:text="3"
+                android:textColor="@color/black"
+                android:contentDescription="3"
+                android:textSize="33.3sp"
+                android:id="@+id/wechat_3"
+                android:layout_gravity="center_horizontal" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:background="#dcdcdc"
+            android:layout_marginTop="1dp"
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@color/wechat_pay"
+                android:layout_weight="1"
+                android:text="4"
+                android:textColor="@color/black"
+                android:textSize="33.3sp"
+                android:id="@+id/wechat_4"
+                android:layout_gravity="center_horizontal" />
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@color/wechat_pay"
+                android:layout_weight="1"
+                android:layout_marginLeft="1dp"
+                android:text="5"
+                android:textColor="@color/black"
+                android:textSize="33.3sp"
+                android:id="@+id/wechat_5"
+                android:layout_gravity="center_horizontal" />
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="1dp"
+                android:background="@color/wechat_pay"
+                android:layout_weight="1"
+                android:text="6"
+                android:textColor="@color/black"
+                android:textSize="33.3sp"
+                android:id="@+id/wechat_6"
+                android:layout_gravity="center_horizontal" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:layout_marginTop="1dp"
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@color/wechat_pay"
+                android:layout_weight="1"
+                android:text="7"
+                android:textColor="@color/black"
+                android:textSize="33.3sp"
+                android:id="@+id/wechat_7"
+                android:layout_gravity="center_horizontal" />
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="0dp"
+                android:layout_marginLeft="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/wechat_pay"
+                android:layout_weight="1"
+                android:text="8"
+                android:textColor="@color/black"
+                android:textSize="33.3sp"
+                android:id="@+id/wechat_8"
+                android:layout_gravity="center_horizontal" />
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="1dp"
+                android:background="@color/wechat_pay"
+                android:layout_weight="1"
+                android:text="9"
+                android:textColor="@color/black"
+                android:textSize="33.3sp"
+                android:id="@+id/wechat_9"
+                android:layout_gravity="center_horizontal" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:layout_marginTop="1dp"
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@color/wechat_pay"
+                android:layout_weight="1"
+                android:textSize="33.3sp"
+                android:id="@+id/wechat_dot"
+                android:layout_gravity="center_horizontal" />
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@color/wechat_pay"
+                android:layout_weight="1"
+                android:layout_marginLeft="1dp"
+                android:text="0"
+                android:textColor="@color/black"
+                android:textSize="33.3sp"
+                android:id="@+id/wechat_0"
+                android:layout_gravity="center_horizontal" />
+
+            <LinearLayout
+                android:focusable="true"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@color/wechat_pay"
+                android:layout_weight="1"
+                android:layout_marginLeft="1dp"
+                android:id="@+id/wechat_del"
+                android:contentDescription="@string/wechat_pay_del"
+                android:gravity="center">
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="36dp"
+                android:layout_height="21dp"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:clickable="false"
+                android:background="@drawable/icon_del"
+                />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

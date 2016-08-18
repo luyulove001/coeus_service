@@ -58,7 +58,11 @@ public class HomeWatcher {
 	 */
 	public void stopWatch() {
 		if (mRecevier != null) {
-			mContext.unregisterReceiver(mRecevier);
+			try {
+				mContext.unregisterReceiver(mRecevier);
+			} catch (IllegalArgumentException e) {
+
+			}
 		}
 	}
 
