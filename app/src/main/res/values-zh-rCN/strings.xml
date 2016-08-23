@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">天坦服务</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="description">通话时可以自动切换扬声器，贴近关闭，离开打开，还可自动打开通话界面的拨号键盘。。。。。</string>
+    <string name="answer_description">启用“接听辅助”服务后，您的手机可以为盲人和视力不好的用户提供电话接听快捷操作。例如，来电时手机会弹出一个列表操作界面，包括接听、挂断等按钮</string>
+    <string name="answer">接听辅助</string>
+    <string name="action_settings">Settings</string>
+    <string name="easy_setting">极简模式的无障碍化体验很差，建议您不要开启此模式！点击可退出</string>
+    <string name="wechat_pay_descrition">请输入支付密码，已验证身份</string>
+    <string name="wechat_pay_del">删除</string>
+    <string name="wechat_pay_down_description">隐藏</string>
+
+    <string name="title_ele">饿了么</string>
+    <string name="title_ele_default_setting">饿了么.天坦优化</string>
+    <string name="summaryOn_pref_ele_default_setting">开启之后对于饿了么的一些数据进行天坦优化</string>
+    <string name="summaryOff_ele_default_setting">关闭之后饿了么的一些功能不再进行天坦优化</string>
+    <string name="title_ele_clean_data">饿了么数据清理</string>
+    <string name="summary_pref_ele_clean_data">双击清理饿了么应用数据</string>
+
+    <string name="title_360">360手机助手</string>
+    <string name="title_360_default_setting">360手机助手.天坦优化</string>
+    <string name="summaryOn_pref_360_default_setting">开启之后对于360手机助手的一些数据进行天坦优化</string>
+    <string name="summaryOff_360_default_setting">关闭3之后60手机助手的一些功能不再进行天坦优化</string>
+    <string name="title_360_clean_data">360手机助手数据清理</string>
+    <string name="summary_pref_360_clean_data">双击清理360手机助手应用数据</string>
+</resources>

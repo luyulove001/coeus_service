@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/title_ele" android:key="@string/pref_ele_key">
+        <net.tatans.coeus.service.activity.TatansSwitchPreference android:title="@string/title_ele_default_setting" android:key="@string/pref_ele_default_setting"
+            android:defaultValue="@bool/pref_ele_default_value" android:summaryOn="@string/summaryOn_pref_ele_default_setting"
+            android:summaryOff="@string/summaryOff_ele_default_setting" />
+        <PreferenceScreen android:title="@string/title_ele_clean_data" android:summary="@string/summary_pref_ele_clean_data"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/title_360" android:key="@string/pref_360_key">
+        <SwitchPreference android:title="@string/title_360_default_setting" android:key="@string/pref_360_default_setting"
+            android:defaultValue="@bool/pref_360_default_value" android:summaryOn="@string/summaryOn_pref_360_default_setting"
+            android:summaryOff="@string/summaryOff_360_default_setting" />
+        <PreferenceScreen android:title="@string/title_360_clean_data" android:summary="@string/summary_pref_ele_clean_data"/>
+    </PreferenceCategory>
+</PreferenceScreen>

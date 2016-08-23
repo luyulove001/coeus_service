@@ -3,15 +3,11 @@ package net.tatans.coeus.service.activity;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.PreferenceActivity;
 import android.util.Log;
 import android.widget.Button;
 
 import net.tatans.coeus.service.R;
 import net.tatans.coeus.util.Const;
-import net.tatans.coeus.util.HomeWatcher;
-import net.tatans.coeus.util.OnHomeKeyEven;
-import net.tatans.coeus.util.OnHomePressedListener;
 import net.tatans.rhea.network.event.OnClick;
 import net.tatans.rhea.network.view.ContentView;
 import net.tatans.rhea.network.view.TatansIoc;
@@ -37,7 +33,7 @@ import java.util.Map;
  * Created by Yuriy on 2016/7/28.
  */
 @ContentView(R.layout.service_setting)
-public class ServiceSetting extends Activity{
+public class ServiceSettingActivity9 extends Activity{
 
     private static String TAG="QQQQ";
     @ViewIoc(R.id.bt_global)
@@ -50,6 +46,7 @@ public class ServiceSetting extends Activity{
     Button btnQQ;
 
     private static final String FILE_NAME = Environment.getExternalStorageDirectory().toString()  + "/tatans/data/defaultSettingApp.xml";
+
     private Map<String,String> mapDefaultSettingApp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
