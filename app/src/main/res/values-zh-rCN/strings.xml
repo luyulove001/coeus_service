@@ -13,15 +13,15 @@
 
     <string name="title_ele">饿了么</string>
     <string name="title_ele_default_setting">饿了么.天坦优化</string>
-    <string name="summaryOn_pref_ele_default_setting">开启之后对于饿了么的一些数据进行天坦优化</string>
-    <string name="summaryOff_ele_default_setting">关闭之后饿了么的一些功能不再进行天坦优化</string>
+    <string name="summaryOn_pref_ele_default_setting">开启之后对于饿了么的一些数据进行无障碍优化</string>
+    <string name="summaryOff_ele_default_setting">关闭之后饿了么的一些功能不再进行无障碍优化</string>
     <string name="title_ele_clean_data">饿了么数据清理</string>
     <string name="summary_pref_ele_clean_data">双击清理饿了么应用数据</string>
 
     <string name="title_360">360手机助手</string>
     <string name="title_360_default_setting">360手机助手.天坦优化</string>
-    <string name="summaryOn_pref_360_default_setting">开启之后对于360手机助手的一些数据进行天坦优化</string>
-    <string name="summaryOff_360_default_setting">关闭3之后60手机助手的一些功能不再进行天坦优化</string>
+    <string name="summaryOn_pref_360_default_setting">开启之后对于360手机助手的一些数据进行无障碍优化</string>
+    <string name="summaryOff_360_default_setting">关闭之后360手机助手的一些功能不再进行无障碍优化</string>
     <string name="title_360_clean_data">360手机助手数据清理</string>
     <string name="summary_pref_360_clean_data">双击清理360手机助手应用数据</string>
 </resources>
