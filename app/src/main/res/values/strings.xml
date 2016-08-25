@@ -1,5 +1,4 @@
 <resources>
-    <string name="pref_ele_key">pref_ele</string>
     <string name="pref_ele_default_setting">me.ele</string>
 
     <string name="pref_360_default_setting">com.qihoo.appstore</string>

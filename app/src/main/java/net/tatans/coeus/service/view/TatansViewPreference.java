@@ -2,14 +2,23 @@ package net.tatans.coeus.service.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Parcelable;
 import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 
+import net.tatans.coeus.network.tools.TatansApplication;
 import net.tatans.coeus.network.utils.FieldUtils;
 import net.tatans.coeus.service.R;
+import net.tatans.coeus.util.DataCleanManager;
 import net.tatans.coeus.util.FileSizeUtil;
 import net.tatans.coeus.util.TatansDefaultSetting;
 
@@ -18,7 +27,8 @@ import net.tatans.coeus.util.TatansDefaultSetting;
  */
 
 public class TatansViewPreference extends Preference {
-    private static String TAG="TatansDefaultSetting";
+    private static String TAG="TatansViewPreference";
+    private static Preference dependency ;
     /**
      * Perform inflation from XML and apply a class-specific base style. This
      * constructor of Preference allows subclasses to use their own base style
@@ -99,31 +109,38 @@ public class TatansViewPreference extends Preference {
     }
 
     @Override
-    public void setTitle(int titleResId) {
-        Log.d(TAG, "setTitle: "+titleResId);
-        super.setTitle(titleResId);
-    }
-
-    @Override
-    public void setTitle(CharSequence title) {
-        Log.d(TAG, "setTitle: "+title);
-        super.setTitle(title);
-    }
-
-    @Override
-    protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
-        super.onSetInitialValue(restorePersistedValue, "9999999999");
+    public CharSequence getSummary() {
+        if (isEnabled()){
+            return TatansApplication.getContext().getString(R.string.summary_pref_clean_data);
+        }else {
+            if (FileSizeUtil.isFileEmpty(super.getKey())){
+                return TatansApplication.getContext().getString(R.string.summary_pref_clean_data_empty);
+            }else {
+                return TatansApplication.getContext().getString(R.string.summary_pref_clean_data_tatans_setting);
+            }
+        }
     }
 
     @Override
     public CharSequence getTitle() {
-        Log.d(TAG, "getTitle: "+Environment.getExternalStorageDirectory().toString()+"/tatans/data/"+super.getKey()+"/");
-        return FileSizeUtil.getFileOrFilesSize(Environment.getExternalStorageDirectory().toString()+"/tatans/data/"+super.getKey()+"/",3)+"MB";
+        return super.getTitle()+FileSizeUtil.getFileOrFilesSize(super.getKey());
+    }
+
+    @Override
+    public void onDependencyChanged(Preference dependency, boolean disableDependent) {
+        dependency=dependency;
+        if (FileSizeUtil.isFileEmpty(getKey())){
+            super.onDependencyChanged(dependency, true);
+        }else {
+            super.onDependencyChanged(dependency,disableDependent);
+        }
     }
 
     @Override
     protected void onClick() {
-        Log.d(TAG, "onClick: ");
+        DataCleanManager.cleanUserData(super.getKey());
+        super.notifyChanged();
+        super.onDependencyChanged(dependency,true);
         super.onClick();
     }
 }

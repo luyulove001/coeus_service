@@ -6,10 +6,10 @@ import android.os.Environment;
  * Created by Yuriy on 2016/8/11.
  */
 
-class DataCleanManager {
+public class DataCleanManager {
     public static final String FILE_NAME = Environment.getExternalStorageDirectory().toString()  + "/tatans/data/";
-   
-    protected static void cleanInternalCache(String packageName) {
+
+    public static void cleanInternalCache(String packageName) {
         File file = new File(FILE_NAME+packageName+  "/cache");
         delete(file);
     }
@@ -31,7 +31,7 @@ class DataCleanManager {
              file.delete();
          }
      }
-    protected static void cleanUserData(String packageName) {
+    public static void cleanUserData(String packageName) {
         File directory =new File(FILE_NAME +packageName);
         delete(directory);
     }

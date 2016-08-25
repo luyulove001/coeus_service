@@ -6,6 +6,7 @@ import android.util.Log;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
@@ -49,6 +50,44 @@ public class TatansDefaultSetting {
         }
     }
     /**
+     * 创建一个XML文档
+     * @return doc 返回该文档
+     */
+    public static Document createXMLDocument(){
+        Document doc = null;
+        doc = DocumentHelper.createDocument();
+        doc.addComment("edited with XMLSpy v2005 rel. 3 U (http://www.altova.com) by  ()");
+//  doc.addDocType("class","//By Jack Chen","saveXML.xsd");
+        Element root = doc.addElement("class");
+        Element company = root.addElement("company");
+        Element person = company.addElement("person");
+        person.addAttribute("id","11");
+        person.addElement("name").setText("Jack Chen");
+        person.addElement("sex").setText("男");
+        person.addElement("date").setText("2001-04-01");
+        person.addElement("email").setText("chen@163.com");
+        person.addElement("QQ").setText("2366001");
+        return doc;
+    }
+    public static void createTatansDefaultXMLDocument(){
+        saveDocument(createXMLDocument());
+    }
+    public static void putDefaultAppXml(String key,String value){
+        mapDefaultSettingApp = new HashMap<String,String>();
+        SAXReader reader = new SAXReader();
+        Document document= null;
+        try {
+            document = reader.read(new File(FILE_NAME));
+            Element node = document.getRootElement();
+            Element person = node.addElement("string");
+            person.attributeValue("name",key);
+            person.setText(value);
+            saveDocument(document);
+        } catch (DocumentException e) {
+            Log.e("TatansMainService", "DocumentException: "+e.toString());
+        }
+    }
+    /**
      * 保存XML文档
      * @param doc
      * @throws IOException
@@ -67,7 +106,6 @@ public class TatansDefaultSetting {
         if (null==mapDefaultSettingApp){
             readTatansManifest();
         }
-        Log.d(TAG, "isContainsValue key:"+string);
         return mapDefaultSettingApp.containsValue(string);
     }
 
