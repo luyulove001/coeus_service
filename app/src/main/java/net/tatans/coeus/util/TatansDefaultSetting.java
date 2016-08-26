@@ -4,6 +4,9 @@ import android.nfc.Tag;
 import android.os.Environment;
 import android.util.Log;
 
+import net.tatans.coeus.network.tools.TatansApplication;
+import net.tatans.coeus.service.R;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -25,7 +28,8 @@ import java.util.Map;
  */
 
 public class TatansDefaultSetting {
-    public static final String FILE_NAME = Environment.getExternalStorageDirectory().toString()  + "/tatans/data/defaultSettingApp.xml";
+    public static final String FILE_PATH = Environment.getExternalStorageDirectory().toString()  + "/tatans/da/";
+    public static final String FILE_NAME =FILE_PATH+"defaultSettingApp.xml";
     private static Map<String,String> mapDefaultSettingApp;
     private static String TAG="TatansDefaultSetting";
 
@@ -56,21 +60,33 @@ public class TatansDefaultSetting {
     public static Document createXMLDocument(){
         Document doc = null;
         doc = DocumentHelper.createDocument();
-        doc.addComment("edited with XMLSpy v2005 rel. 3 U (http://www.altova.com) by  ()");
 //  doc.addDocType("class","//By Jack Chen","saveXML.xsd");
-        Element root = doc.addElement("class");
-        Element company = root.addElement("company");
-        Element person = company.addElement("person");
-        person.addAttribute("id","11");
-        person.addElement("name").setText("Jack Chen");
-        person.addElement("sex").setText("男");
-        person.addElement("date").setText("2001-04-01");
-        person.addElement("email").setText("chen@163.com");
-        person.addElement("QQ").setText("2366001");
+        Element root = doc.addElement("map");
+        root.addElement("string").addAttribute("name","com.tencent.qqpinyin").setText("com.tencent.qqpinyin");
+        root.addElement("string").addAttribute("name","com.tencent.mm").setText("com.tencent");
+        root.addElement("string").addAttribute("name","me.ele").setText("me.ele");
+        root.addElement("string").addAttribute("name","com.tencent.mobileqq").setText("com.tencent.mobileqq");
+        root.addElement("string").addAttribute("name","com.qihoo.appstore").setText("com.qihoo.appstore");
         return doc;
     }
+    private static void makdirTatansDefaultFile(){
+        File file =new File(FILE_PATH);
+        if  (!file .exists()  && !file .isDirectory())
+        {
+            Log.d(TAG, "创建文件夹 ");
+            file .mkdir();
+        } else
+        {
+            Log.d(TAG, "文件夹存在");
+        }
+    }
     public static void createTatansDefaultXMLDocument(){
-        saveDocument(createXMLDocument());
+        File file=new File(FILE_NAME);
+        if(!file.exists())
+        {
+            makdirTatansDefaultFile();
+            saveDocument(createXMLDocument());
+        }
     }
     public static void putDefaultAppXml(String key,String value){
         mapDefaultSettingApp = new HashMap<String,String>();
@@ -84,7 +100,7 @@ public class TatansDefaultSetting {
             person.setText(value);
             saveDocument(document);
         } catch (DocumentException e) {
-            Log.e("TatansMainService", "DocumentException: "+e.toString());
+            Log.e(TAG, "DocumentException: "+e.toString());
         }
     }
     /**
