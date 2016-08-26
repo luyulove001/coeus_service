@@ -26,4 +26,40 @@
     <string name="summaryOn_pref_360_default_setting">开启之后对于360手机助手的一些数据进行无障碍优化</string>
     <string name="summaryOff_360_default_setting">关闭之后360手机助手的一些功能不再进行无障碍优化</string>
     <string name="title_360_clean_data">360手机助手数据</string>
+
+    <string name="title_map">高德地图</string>
+    <string name="title_map_default_setting">高德地图，天坦优化</string>
+    <string name="summaryOn_pref_map_default_setting">开启之后对于高德地图的一些数据进行无障碍优化</string>
+    <string name="summaryOff_map_default_setting">关闭之后高德地图的一些功能不再进行无障碍优化</string>
+    <string name="title_map_clean_data">高德地图数据</string>
+
+    <string name="title_taobao">手机淘宝</string>
+    <string name="title_taobao_default_setting">手机淘宝，天坦优化</string>
+    <string name="summaryOn_pref_taobao_default_setting">开启之后对于手机淘宝的一些数据进行无障碍优化</string>
+    <string name="summaryOff_taobao_default_setting">关闭之后手机淘宝的一些功能不再进行无障碍优化</string>
+    <string name="title_taobao_clean_data">手机淘宝数据</string>
+
+    <string name="title_kugou">酷FM</string>
+    <string name="title_kugou_default_setting">酷FM，天坦优化</string>
+    <string name="summaryOn_pref_kugou_default_setting">开启之后对于酷FM的一些数据进行无障碍优化</string>
+    <string name="summaryOff_kugou_default_setting">关闭之后酷FM的一些功能不再进行无障碍优化</string>
+    <string name="title_kugou_clean_data">酷FM数据</string>
+
+    <string name="title_didi">滴滴出行</string>
+    <string name="title_didi_default_setting">滴滴出行，天坦优化</string>
+    <string name="summaryOn_pref_didi_default_setting">开启之后对于滴滴出行的一些数据进行无障碍优化</string>
+    <string name="summaryOff_didi_default_setting">关闭之后滴滴出行的一些功能不再进行无障碍优化</string>
+    <string name="title_didi_clean_data">滴滴出行数据</string>
+
+    <string name="title_meituan">美团外卖</string>
+    <string name="title_meituan_default_setting">美团外卖，天坦优化</string>
+    <string name="summaryOn_pref_meituan_default_setting">开启之后对于美团外卖的一些数据进行无障碍优化</string>
+    <string name="summaryOff_meituan_default_setting">关闭之后美团外卖的一些功能不再进行无障碍优化</string>
+    <string name="title_meituan_clean_data">美团外卖数据</string>
+
+    <string name="title_iflytek">讯飞语记</string>
+    <string name="title_iflytek_default_setting">讯飞语记，天坦优化</string>
+    <string name="summaryOn_pref_iflytek_default_setting">开启之后对于讯飞语记的一些数据进行无障碍优化</string>
+    <string name="summaryOff_iflytek_default_setting">关闭之后讯飞语记的一些功能不再进行无障碍优化</string>
+    <string name="title_iflytek_clean_data">讯飞语记数据</string>
 </resources>
