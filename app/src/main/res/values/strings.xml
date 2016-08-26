@@ -1,5 +1,10 @@
 <resources>
     <string name="pref_ele_default_setting">me.ele</string>
-
     <string name="pref_360_default_setting">com.qihoo.appstore</string>
+    <string name="pref_map_default_setting">com.autonavi.minimap</string>
+    <string name="pref_taobao_default_setting">com.taobao.taobao</string>
+    <string name="pref_kugou_default_setting">com.kugou.fm </string>
+    <string name="pref_iflytek_default_setting">com.iflytek.vflynote </string>
+    <string name="pref_meituan_default_setting">com.sankuai.meituan.takeoutnew </string>
+    <string name="pref_didi_default_setting">com.sdu.didi.psnger </string>
 </resources>
