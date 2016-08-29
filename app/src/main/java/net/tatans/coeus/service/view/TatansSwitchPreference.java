@@ -1,4 +1,4 @@
-package net.tatans.coeus.service.activity;
+package net.tatans.coeus.service.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -8,11 +8,14 @@ import android.preference.SwitchPreference;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import net.tatans.coeus.util.TatansDefaultSetting;
+
 /**
  * Created by Yuriy on 2016/8/23.
  */
 
 public class TatansSwitchPreference extends SwitchPreference {
+    private static String TAG="TatansDefaultSetting";
     /**
      * Construct a new SwitchPreference with the given style options.
      *
@@ -61,49 +64,21 @@ public class TatansSwitchPreference extends SwitchPreference {
         super(context);
     }
     @Override
-    public boolean isChecked() {
-        Log.d("Yuriy","super.isChecked():"+super.isChecked());
-        return super.isChecked();
-    }
-    @Override
     protected boolean callChangeListener(Object newValue) {
-        Log.d("Yuriy","newValue:"+newValue);
-        Log.d("Yuriy","key:"+super.getKey());
+        Log.d(TAG, "callChangeListener0: "+newValue);
+        if (newValue.equals(true)){
+            Log.d(TAG, "callChangeListener: "+true+"---"+super.getKey());
+            TatansDefaultSetting.modifyDefaultAppXml(super.getKey(),super.getKey());
+        }else {
+            Log.d(TAG, "callChangeListener: "+false+"---"+"no");
+            TatansDefaultSetting.modifyDefaultAppXml(super.getKey(),"no");
+        }
         return super.callChangeListener(newValue);
     }
 
-    //预设的值
-    @Override
-    protected boolean persistBoolean(boolean value) {
-        Log.d("Yuriy","value:"+value);
-        return super.persistBoolean(value);
-    }
-
-    @Override
-    protected boolean getPersistedBoolean(boolean defaultReturnValue) {
-        Log.d("Yuriy","defaultReturnValue:"+defaultReturnValue);
-        return super.getPersistedBoolean(defaultReturnValue);
-    }
-    @Override
-    protected void notifyChanged() {
-        Log.d("Yuriy","notifyChanged:");
-        super.notifyChanged();
-    }
     @Override
     protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
-        Log.d("Yuriy","onSetInitialValue:"+restoreValue+":"+defaultValue);
-        super.onSetInitialValue(restoreValue, defaultValue);
-    }
-
-    @Override
-    public String getKey() {
-        Log.d("Yuriy","getKey:"+super.getKey());
-        return super.getKey();
-    }
-
-    @Override
-    public SharedPreferences getSharedPreferences() {
-        Log.d("Yuriy","getSharedPreferences:");
-        return super.getSharedPreferences();
+        Log.d(TAG, "onSetInitialValue: "+defaultValue);
+        super.onSetInitialValue(restoreValue, TatansDefaultSetting.isContainsValue(super.getKey()));
     }
 }

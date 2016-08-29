@@ -4,6 +4,7 @@ import net.tatans.coeus.network.tools.CrashHandler;
 import net.tatans.coeus.network.tools.TatansApplication;
 import net.tatans.coeus.network.tools.TatansLog;
 import net.tatans.coeus.network.tools.TatansSpeaker;
+import net.tatans.coeus.util.TatansDefaultSetting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class TatansServiceApplication extends TatansApplication{
         super.onCreate();
         CrashHandler crashHandler = CrashHandler.getInstance();
         crashHandler.initTatans("service");
+        TatansDefaultSetting.createTatansDefaultXMLDocument();
         TatansLog.TAG="TatansService";
         TatansLog.d("TatansServiceApplication");
         setAppSpeaker();
