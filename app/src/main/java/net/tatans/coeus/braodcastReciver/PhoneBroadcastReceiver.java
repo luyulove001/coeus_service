@@ -23,6 +23,21 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if ("android.intent.action.NEW_OUTGOING_CALL".equals(intent.getAction())) {
             Const.EXTRA_PHONE_NUMBER = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent i = new Intent(TatansApplication.getContext(), FxService.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    i.putExtra("EXTRA_PHONE_NUMBER", Const.EXTRA_PHONE_NUMBER);
+                    TatansLog.e("onReceive --- isDestory:" + FxService.isDestroy);
+                    if (!FxService.isDestroy) {
+//                                TatansApplication.getContext().startActivity(i);
+                        i.putExtra("isCalling", true);
+                        TatansApplication.getContext().startService(i);
+                        FxService.interrupt(0);
+                    }
+                }
+            }, 800);
         } else {
             tManager = (TelephonyManager) context
                     .getSystemService(Service.TELEPHONY_SERVICE);
@@ -41,19 +56,21 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver {
                     InCallControl.flag = true;
                     InCallControl.closed = true;
                     Log.d("antony", "online");
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Intent i = new Intent(TatansApplication.getContext(), MainActivity.class);
-                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            i.putExtra("EXTRA_PHONE_NUMBER", Const.EXTRA_PHONE_NUMBER);
-                            if (!FxService.isDestroy) {
-                                Log.e("antony", FxService.isDestroy + "--" + i);
-                                TatansApplication.getContext().startActivity(i);
-                                FxService.interrupt(0);
-                            }
-                        }
-                    }, 800);
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Intent i = new Intent(TatansApplication.getContext(), FxService.class);
+//                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                            i.putExtra("EXTRA_PHONE_NUMBER", Const.EXTRA_PHONE_NUMBER);
+//                            TatansLog.e("onReceive --- isDestory:" + FxService.isDestroy);
+//                            if (!FxService.isDestroy && Const.PHONE_STATE != TelephonyManager.CALL_STATE_OFFHOOK) {
+////                                TatansApplication.getContext().startActivity(i);
+//                                i.putExtra("isCalling", true);
+//                                TatansApplication.getContext().startService(i);
+//                                FxService.interrupt(0);
+//                            }
+//                        }
+//                    }, 800);
                     Const.PHONE_STATE = TelephonyManager.CALL_STATE_OFFHOOK;
                     break;
 

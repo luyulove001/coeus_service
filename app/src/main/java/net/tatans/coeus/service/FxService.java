@@ -34,6 +34,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import net.tatans.coeus.network.tools.TatansApplication;
+import net.tatans.coeus.network.tools.TatansLog;
 import net.tatans.coeus.network.tools.TatansToast;
 import net.tatans.coeus.service.activity.MainActivity;
 import net.tatans.coeus.service.activity.TatansServiceApplication;
@@ -65,6 +66,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     AudioManager audioManager;
     SensorManager sensorManager;
     SensorProximity sensor;
+    private boolean isCalling;
 
     @Override
     public void onCreate() {
@@ -81,6 +83,18 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         mDetector = new GestureDetector(this, new mOnGestureListener());
         copyDB();
         isDestroy = false;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        isCalling = intent.getBooleanExtra("isCalling", false);
+        if (isCalling) {
+            removeAllView();
+            String number = intent.getStringExtra("EXTRA_PHONE_NUMBER");
+            numbername = queryNumberName(number);
+            createView();
+        }
+        return super.onStartCommand(intent, flags, startId);
     }
 
     /**
@@ -158,11 +172,12 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     }
 
     private GestureDetector mDetector;//屏幕监控
+
     private void initKbView() {
         btn_endCall = (LinearLayout) mFloatLayout.findViewById(R.id.btn_endCall);
         btn_answer = (LinearLayout) mFloatLayout.findViewById(R.id.btn_answer);
         tv_number = (TextView) mFloatLayout.findViewById(R.id.tv_number);
-        lyt_full= (LinearLayout) mFloatLayout.findViewById(R.id.lyt_full);
+        lyt_full = (LinearLayout) mFloatLayout.findViewById(R.id.lyt_full);
         btn_endCall.setOnClickListener(this);
         btn_answer.setOnClickListener(this);
         btn_answer.setContentDescription("点击接听。按钮");
@@ -192,7 +207,8 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     }
 
     private void endCall() {
-        PhoneUtil.endCall(FxService.this);
+        PhoneUtil.endCall1(FxService.this);
+        isCalling = false;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -202,7 +218,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         }, 800);
     }
 
-    public  void answerCall() {
+    public void answerCall() {
         //4.4接听方法
 //        try {
 //            Intent intent = new Intent("android.intent.action.MEDIA_BUTTON");
@@ -246,19 +262,19 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     }
 
     public static void interrupt(int score) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        AccessibilityManager accessibilityManager = (AccessibilityManager) TatansApplication.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
-                        accessibilityManager.interrupt();
-                        TatansToast.cancel();
-                        Log.e("antony", "打断");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    AccessibilityManager accessibilityManager = (AccessibilityManager) TatansApplication.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+                    accessibilityManager.interrupt();
+                    TatansToast.cancel();
+                    Log.e("antony", "打断");
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            }, score);
+            }
+        }, score);
     }
 
 
@@ -266,6 +282,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     public void onDestroy() {
         telephonyManager.listen(null, PhoneStateListener.LISTEN_CALL_STATE);
         isDestroy = true;
+        TatansLog.e("onDestroy --- isDestory:" + isDestroy);
         super.onDestroy();
     }
 
@@ -279,6 +296,12 @@ public class FxService extends AccessibilityService implements View.OnClickListe
 
     }
 
+    @Override
+    public boolean onUnbind(Intent intent) {
+        isDestroy = true;
+        TatansLog.e("onUnbind --- isDestory:" + isDestroy);
+        return super.onUnbind(intent);
+    }
 
     /**
      * 移除悬浮窗口
@@ -290,18 +313,18 @@ public class FxService extends AccessibilityService implements View.OnClickListe
             mFloatLayout = null;
         }
     }
+
     public static void destoryView() {
         try {
             if (mFloatLayout != null && mWindowManager != null)
                 mWindowManager.removeView(mFloatLayout);
-        }
-        catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
     }
 
-    public static void removeAnswerView(){
-        if (mAnswerLayout != null){
+    public static void removeAnswerView() {
+        if (mAnswerLayout != null) {
             mWindowManager.removeView(mAnswerLayout);
             mAnswerLayout = null;
         }
@@ -368,8 +391,8 @@ public class FxService extends AccessibilityService implements View.OnClickListe
 //        Uri uri = Uri.parse("content://com.android.contacts/data/phones/filter/" + incomingNumber);
 //        String city = PhoneUtil.mobileNumber(incomingNumber);
         String city = NumberAddressQueryUtils.queryNumber(incomingNumber);
-        String[] projection = { ContactsContract.PhoneLookup.DISPLAY_NAME,
-                ContactsContract.PhoneLookup.NUMBER };
+        String[] projection = {ContactsContract.PhoneLookup.DISPLAY_NAME,
+                ContactsContract.PhoneLookup.NUMBER};
         Uri uri = Uri.withAppendedPath(
                 ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
                 Uri.encode(incomingNumber));
@@ -388,7 +411,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
         }
         cursor.close();
 
-        return incomingNumber  + "\n" + city;
+        return incomingNumber + "\n" + city;
     }
 
     /**
@@ -411,7 +434,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
     private void copyDB() {
         try {
             String path = getApplicationContext().getFilesDir()
-                    .getAbsolutePath()+ "address.db";   //data/data目录
+                    .getAbsolutePath() + "address.db";   //data/data目录
             File file = new File(path);
             if (file.exists() && file.length() > 0) {
             } else {
@@ -449,7 +472,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                     //离开手机，设置扬声器外方true
                     audioManager.setSpeakerphoneOn(true);
                     FxService.interrupt(200);
-                }else {
+                } else {
                     //默认听筒
                     audioManager.setSpeakerphoneOn(false);
                 }
