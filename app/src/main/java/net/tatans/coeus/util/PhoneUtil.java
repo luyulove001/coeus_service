@@ -23,7 +23,7 @@ public class PhoneUtil {
      *
      * @param context
      */
-    public static void endCall(Context context) {
+    public static void endCallByTelephony(Context context) {
         try {
             Object telephonyObject = getTelephonyObject(context);
             if (null != telephonyObject) {
@@ -54,7 +54,7 @@ public class PhoneUtil {
      *
      * @param context
      */
-    public static void endCall1(Context context) {
+    public static void endCallByTelecom(Context context) {
         try {
             Object telecomObject = getTelecomObject(context);
             Log.e("antony", "null != telecomObject--" + (null != telecomObject));

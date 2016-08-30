@@ -12,7 +12,6 @@ import net.tatans.coeus.network.tools.TatansApplication;
 import net.tatans.coeus.network.tools.TatansLog;
 import net.tatans.coeus.service.FxService;
 import net.tatans.coeus.service.InCallControl;
-import net.tatans.coeus.service.activity.MainActivity;
 import net.tatans.coeus.util.Const;
 
 public class PhoneBroadcastReceiver extends BroadcastReceiver {
@@ -31,7 +30,7 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver {
                     i.putExtra("EXTRA_PHONE_NUMBER", Const.EXTRA_PHONE_NUMBER);
                     TatansLog.e("onReceive --- isDestory:" + FxService.isDestroy);
                     if (!FxService.isDestroy) {
-//                                TatansApplication.getContext().startActivity(i);
+//                      TatansApplication.getContext().startActivity(i);
                         i.putExtra("isCalling", true);
                         TatansApplication.getContext().startService(i);
                         FxService.interrupt(0);
