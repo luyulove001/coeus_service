@@ -86,12 +86,14 @@ public class FxService extends AccessibilityService implements View.OnClickListe
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        isCalling = intent.getBooleanExtra("isCalling", false);
-        if (isCalling) {
-            removeAllView();
-            String number = intent.getStringExtra("EXTRA_PHONE_NUMBER");
-            numberName = queryNumberName(number);
-            createFloatView(R.layout.activity_main);
+        if (intent != null) {
+            isCalling = intent.getBooleanExtra("isCalling", false);
+            if (isCalling) {
+                removeAllView();
+                String number = intent.getStringExtra("EXTRA_PHONE_NUMBER");
+                numberName = queryNumberName(number);
+                createFloatView(R.layout.activity_main);
+            }
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -256,6 +258,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
             AccessibilityManager accessibilityManager = (AccessibilityManager) TatansApplication.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
             accessibilityManager.interrupt();
             TatansToast.cancel();
+            Log.e("antony", "打断");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -339,6 +342,7 @@ public class FxService extends AccessibilityService implements View.OnClickListe
                     //查询该号码对应的名字
                     numberName = queryNumberName(incomingNumber);
                     createFloatView(R.layout.kb_answer);
+                    interrupt();
                     tvNumber.setText(numberName);
                     TatansServiceApplication.speech("来电:" + numberName + "。来电:" + numberName);
                     Log.e("antony", "speech");
